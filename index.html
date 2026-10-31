@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monitoring Dokumen Armada</title>
+<style>
+:root{--bg:#f5f6f8;--cd:#fff;--tx:#1b2430;--mu:#667085;--bd:#e3e7ee;--pri:#1d4ed8;--ex:#fde2e1;--exc:#b42318;--wa:#fff0cc;--wac:#8a5a00;--ok:#dcf5e4;--okc:#17692f;--na:#eef0f3}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--cd:#1b2129;--tx:#e8ecf2;--mu:#98a2b3;--bd:#2c3440;--pri:#6b9bff;--ex:#4a1d1b;--exc:#ff9d94;--wa:#4a3a10;--wac:#ffd272;--ok:#14391f;--okc:#7fe3a0;--na:#262d37}}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{padding:14px 16px;background:var(--cd);border-bottom:1px solid var(--bd);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+h1{font-size:16px;margin:0;flex:1}nav button{margin-right:6px}
+button{border:0;background:var(--pri);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit}
+button.g{background:var(--na);color:var(--tx)}button.on{outline:2px solid var(--pri);outline-offset:1px}
+main{padding:14px;max-width:1300px;margin:auto}.mu{color:var(--mu)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--cd);color:var(--tx);font:inherit;max-width:100%}
+.w{overflow-x:auto;background:var(--cd);border:1px solid var(--bd);border-radius:10px;max-height:72vh}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
+th{position:sticky;top:0;background:var(--cd);z-index:1}td.c{cursor:pointer;text-align:center}td.c:hover{outline:2px solid var(--pri);outline-offset:-2px}
+.w7{background:#f2b705;color:#3b2a00;font-weight:600}td.c.ok,td.c.na{background:none;color:inherit}.ex{background:var(--ex);color:var(--exc)}.wa{background:var(--wa);color:var(--wac)}.ok{background:var(--ok);color:var(--okc)}.na{background:var(--na);color:var(--mu)}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k div,.cd{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:12px}.k b{display:block;font-size:26px}
+.cd{margin-bottom:14px;overflow-x:auto}.cd h2{font-size:14px;margin:0 0 8px}
+.n{border-radius:6px;padding:2px 10px;cursor:pointer;display:inline-block;min-width:34px;text-align:center}
+.sb{display:flex;height:10px;border-radius:5px;overflow:hidden;min-width:120px;background:var(--na)}.sb i{display:block}
+.sb .ex{background:#e5484d}.sb .w7{background:#d99a00}.sb .wa{background:#f6d860}.sb .ok{background:#30a46c}
+#mo{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:14px;z-index:9}#mo[hidden]{display:none}
+.mc{background:var(--cd);border-radius:12px;padding:18px;width:100%;max-width:400px}.mc h3{margin:0}.mc label{display:block;margin:12px 0 4px}.mc input{width:100%}
+.bt{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+</style></head><body>
+<header><h1>Monitoring Dokumen Armada</h1>
+<span id="lu" class="mu"></span>
+<nav><button id="b1" onclick="tab('t')">Dokumen</button><button id="b2" class="g" onclick="tab('d')">Dashboard</button><button class="g" onclick="load()">Muat ulang</button></nav></header>
+<main>
+<section id="st">
+<div class="bar"><input id="q" placeholder="Cari kode / nopol…" oninput="renderT()">
+<select id="ft" onchange="renderT()"></select>
+<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select>
+<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Sudah lewat</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Aman</option><option value="na">Belum ada data</option></select></div>
+<p class="mu">Klik sel tanggal untuk memperbarui masa berlaku dan mengunggah dokumen. Tanda 📎 berarti dokumen sudah diunggah.</p>
+<div class="w"><table id="tb"></table></div></section>
+<section id="sd" hidden></section>
+</main>
+<div id="mo" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
+<label>Tanggal masa berlaku<input type="date" id="md"></label>
+<label>Upload dokumen (PDF/foto, maks 4 MB)<input type="file" id="mf" accept=".pdf,image/*"></label>
+<div id="ml"></div><div class="bt"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Simpan</button></div></div></div>
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyv_BlH1ktlaQ5ri2OzKt26-eS5xMuKz2xYSoFBAv-o2bFacYj0dwV0v9Jughskcfqz/exec';
+const DOCS=['PAJAK','STNK','KIR','SIPA','IBM'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
+const DEMO=[{k:'I5T',p:'B9058BEN',t:'WINGBOX',d:['30 Aug 2026','30 Aug 2028','14 Apr 2026','8 Jun 2027','3 Jan 2027'],l:['','','','','']},
+{k:'I3F',p:'A8664VA',t:'FUSO',d:['12 Nov 2026','12 Nov 2029','3 Sep 2026','10 Des 2026','29 Oct 2026'],l:['','','','','']},
+{k:'I1C',p:'FUKU8300135',t:'CONT-40',d:['-','-','17 Sep 2026','-','-'],l:['','','','','']},
+{k:'I90',p:'A8561VB',t:'CDE LONG CHASSIS',d:['26 Jul 2027','26 Jul 2029','3 Aug 2026','5 Nov 2026','29 Oct 2026'],l:['','','','','']}];
+const T0=new Date();T0.setHours(0,0,0,0);
+let ROWS=[],PIN=sessionStorage.getItem('pin')||'',USR=sessionStorage.getItem('usr')||'',cur=null;
+const $=s=>document.querySelector(s);
+function pd(s){s=s||'';let m=/(\d{1,2})[\s-]+([A-Za-z]+)[\s-]+(\d{4})/.exec(s);if(m){const k=MON[m[2].slice(0,3).toLowerCase()];return k==null?null:new Date(+m[3],k,+m[1]);}
+m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
+function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
+const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'':'g';$('#b2').className=x=='d'?'':'g';}
+let busy=false,hold=0,sig='';
+function load(q){
+if(SCRIPT_URL.startsWith('GANTI')){if(!q){ROWS=JSON.parse(JSON.stringify(DEMO));render()}return}
+if(busy)return;
+if(!PIN||!USR){if(q)return;USR=prompt('Username:')||'';PIN=prompt('PIN:')||'';sessionStorage.setItem('pin',PIN);sessionStorage.setItem('usr',USR)}
+busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
+window[cb]=r=>{busy=false;s.remove();delete window[cb];
+if(r.error){if(!q)alert(r.error);PIN=USR='';sessionStorage.removeItem('pin');sessionStorage.removeItem('usr');return}
+if(q&&Date.now()<hold)return;
+const g=JSON.stringify(r.rows);if(g==sig)return;sig=g;ROWS=r.rows;render();$('#lu').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID')};
+s.onerror=()=>{busy=false;s.remove();if(!q)alert('Gagal terhubung ke Apps Script. Cek URL dan akses Web App (Anyone).')};
+s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
+setInterval(()=>{if(!document.hidden&&$('#mo').hidden)load(true)},5000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
+function render(){
+const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
+$('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
+if($('#fd').options.length<2)DOCS.forEach((d,i)=>$('#fd').add(new Option(d,i)));
+renderT();renderD()}
+function renderT(){
+const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value;
+const rows=ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
+if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
+if(s){const ix=d===''?[0,1,2,3,4]:[+d];if(!ix.some(i=>st(r.d[i]).k==s))return false}return true});
+$('#tb').innerHTML='<tr><th>No</th><th>Kode</th><th>No Polisi</th><th>Tipe</th>'+DOCS.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+
+rows.map(([r,ri],n)=>`<tr><td>${n+1}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}</td>`}).join('')+'</tr>').join('')}
+$('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
+function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
+$('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
+$('#md').value=z.d?iso(z.d):'';$('#mf').value='';
+$('#ml').innerHTML=r.l[i]?`<a href="${r.l[i]}" target="_blank" rel="noopener">📎 Lihat dokumen tersimpan</a>`:'';$('#mo').hidden=false}
+function closeM(){$('#mo').hidden=true}
+const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
+async function save(){
+const dv=$('#md').value,f=$('#mf').files[0];
+if(!dv&&!f)return alert('Isi tanggal atau pilih file.');if(f&&f.size>4e6)return alert('File maksimal 4 MB.');
+const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
+const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
+if(dt)cur.r.d[cur.i]=dt;if(f)cur.r.l[cur.i]='#';
+if(!SCRIPT_URL.startsWith('GANTI')){try{hold=Date.now()+10000;await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)})}catch(e){return alert('Gagal mengirim: '+e)}}
+closeM();render()}
+function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0};rs.forEach(r=>ix.forEach(i=>c[st(r.d[i]).k]++));return c}
+function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
+const esc=s=>String(s).replace(/'/g,"\\'");
+function nb(c,k,t,d){return`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')">${c[k]}</span>`}
+function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="w7" style="width:${c.w7/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
+function renderD(){
+const all=cnt(ROWS,[0,1,2,3,4]),H='<tr><th>{h}</th><th>Sudah lewat</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Aman</th><th>Tanpa data</th><th>Proporsi</th></tr>';
+let h=`<div class="k"><div><b>${ROWS.length}</b>Total armada</div><div class="ex"><b>${all.ex}</b>Dokumen sudah lewat</div><div class="w7"><b>${all.w7}</b>Jatuh tempo ≤ 7 hari</div><div class="wa"><b>${all.wa}</b>Jatuh tempo 8–30 hari</div><div><b>${all.ok}</b>Dokumen aman</div></div>`;
+h+='<div class="cd"><h2>Per dokumen</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${['ex','w7','wa','ok','na'].map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
+const ts=[...new Set(ROWS.map(r=>r.t))].sort();
+h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=ROWS.filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${['ex','w7','wa','ok','na'].map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
+const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k=='wa'||z.k=='w7')L.push({r,ri,i,n:z.n,d:z.d,k:z.k})}));L.sort((a,b)=>a.n-b.n);
+h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): ${L.length} dokumen</h2><table><tr><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th></tr>`+
+L.map(x=>`<tr class="c" style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td></tr>`).join('')+'</table></div>';
+$('#sd').innerHTML=h}
+load();
+</script></body></html>
