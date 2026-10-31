@@ -64,6 +64,8 @@ table{border-left:1px solid #c5d0e2}
 th{border-bottom:1px solid #0b2556;border-right:1px solid #ffffff40}
 td.c.ok,td.c.na{background:#fff;color:var(--tx)}
 tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
+.rz{position:absolute;right:-3px;top:0;bottom:0;width:9px;cursor:col-resize;z-index:3}.rz:hover{background:#ffffff66}
+#tb{min-width:100%}#tb td{overflow:hidden;text-overflow:ellipsis}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -144,13 +146,22 @@ if(!s&&!dOn)return true;
 return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||st(r.d[i]).k==s)&&(!dOn||inR(pd(r.d[i]))))})
 .sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
 function srt(k){SO=SO.k===k?{k,d:-SO.d}:{k,d:1};renderT()}
-const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span></th>';
+const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span><i class="rz" onmousedown="rz(event)" onclick="event.stopPropagation()" ondblclick="rzReset()"></i></th>';
 function renderT(){
-const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen.';
-$('#tb').innerHTML='<tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
+const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
+$('#tb').innerHTML='<colgroup>'+'<col>'.repeat(9)+'</colgroup><tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
 rows.map(([r,ri],n)=>`<tr><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
-const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('')}
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('');applyW()}
 $('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
+let W=null;try{W=JSON.parse(localStorage.getItem('cw')||'null')}catch(e){}
+function applyW(){const t=$('#tb');if(!W||W.length!=9){W=null;t.style.tableLayout='';t.style.width='';return}
+t.style.tableLayout='fixed';t.style.width=W.reduce((a,b)=>a+b,0)+'px';t.querySelectorAll('col').forEach((c,i)=>c.style.width=W[i]+'px')}
+function rz(e){e.preventDefault();e.stopPropagation();const th=e.target.parentNode,ch=[...th.parentNode.children],idx=ch.indexOf(th);
+if(!W)W=ch.map(x=>x.offsetWidth);const x0=e.clientX,w0=W[idx];applyW();
+const mv=ev=>{W[idx]=Math.max(40,w0+ev.clientX-x0);applyW()};
+const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);try{localStorage.setItem('cw',JSON.stringify(W))}catch(e){}};
+document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up)}
+function rzReset(){W=null;try{localStorage.removeItem('cw')}catch(e){}renderT()}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
