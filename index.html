@@ -74,7 +74,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div id="le"></div><div class="bt2"><button id="lb" onclick="doLogin()">Login</button></div></div></div>
 <header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
 <button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
-<span id="hb"><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
+<span id="hb"><button class="hq" onclick="openA()"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Armada</button><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
 <span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
 <main>
 <section id="st">
@@ -97,6 +97,11 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <label>Upload dokumen (PDF/foto, maks 4 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
 <div class="bt2"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Save</button></div></div></div>
+<div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
+<label>Site<input id="as" list="dls"></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
+<label>Masa berlaku dokumen (boleh dikosongkan, bisa diisi nanti)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><small class="mu">PAJAK</small><input type="date" id="ad0"></div><div><small class="mu">STNK</small><input type="date" id="ad1"></div><div><small class="mu">KIR</small><input type="date" id="ad2"></div><div><small class="mu">SIPA</small><input type="date" id="ad3"></div><div><small class="mu">IBM</small><input type="date" id="ad4"></div></div>
+<div class="bt2"><button class="g" onclick="closeA()">Batal</button><button onclick="addA()">Simpan</button></div></div></div>
+<datalist id="dls"></datalist><datalist id="dlt"></datalist>
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyv_BlH1ktlaQ5ri2OzKt26-eS5xMuKz2xYSoFBAv-o2bFacYj0dwV0v9Jughskcfqz/exec';
 const DOCS=['PAJAK','STNK','KIR','SIPA','IBM'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -134,6 +139,7 @@ if($('#fd').options.length<2)DOCS.forEach((d,i)=>$('#fd').add(new Option(d,i)));
 if($('#fm').options.length<2)['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'].forEach((m,i)=>$('#fm').add(new Option(m,i+1)));
 const ys=[...new Set(ROWS.flatMap(r=>r.d.map(x=>{const d=pd(x);return d&&d.getFullYear()})).filter(Boolean))].sort(),yv=$('#fy').value;
 $('#fy').innerHTML='<option value="">Semua</option>'+ys.map(y=>`<option${y==yv?' selected':''}>${y}</option>`).join('');
+$('#dls').innerHTML=sites.map(x=>'<option value="'+x+'">').join('');$('#dlt').innerHTML=ts.map(x=>'<option value="'+x+'">').join('');
 renderT();renderD()}
 function show(){F={m:$('#fm').value,y:$('#fy').value,s:$('#f0').value,e:$('#fe').value};renderT()}
 function reset(){['fm','fy','f0','fe'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
@@ -162,6 +168,16 @@ const mv=ev=>{W[idx]=Math.max(40,w0+ev.clientX-x0);applyW()};
 const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);try{localStorage.setItem('cw',JSON.stringify(W))}catch(e){}};
 document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up)}
 function rzReset(){W=null;try{localStorage.removeItem('cw')}catch(e){}renderT()}
+function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');$('#as').value=(ROWS.find(r=>r.n)||{}).n||'';DOCS.forEach((d,i)=>$('#ad'+i).value='');$('#ma').hidden=false}
+function closeA(){$('#ma').hidden=true}
+const fd=v=>v?(+v.slice(8)+' '+MN[+v.slice(5,7)-1]+' '+v.slice(0,4)):'';
+async function addA(){
+const site=$('#as').value.trim(),k=$('#ak').value.trim().toUpperCase(),p=$('#ap').value.trim().toUpperCase().replace(/\s+/g,''),t=$('#at').value.trim().toUpperCase();
+if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
+if(ROWS.some(r=>r.k.toUpperCase()==k))return alert('Kode armada '+k+' sudah ada.');
+const d=DOCS.map((_,i)=>fd($('#ad'+i).value));hold=Date.now()+10000;
+try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d})})}catch(e){return alert('Gagal mengirim: '+e)}
+ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render()}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
