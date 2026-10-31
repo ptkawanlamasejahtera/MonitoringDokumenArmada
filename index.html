@@ -66,12 +66,13 @@ td.c.ok,td.c.na{background:#fff;color:var(--tx)}
 tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .rz{position:absolute;right:-3px;top:0;bottom:0;width:9px;cursor:col-resize;z-index:3}.rz:hover{background:#ffffff66}
 #tb{min-width:100%}#tb td{overflow:hidden;text-overflow:ellipsis}
+.n.pp{background:#ffe5cf;color:#c2500a}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
 <label>Password<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
 <div id="le"></div><div class="bt2"><button id="lb" onclick="doLogin()">Login</button></div></div></div>
-<header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada<small id="sub">NDC Jababeka HCI</small></span></h1>
+<header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
 <button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
 <span id="hb"><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
 <span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
@@ -81,7 +82,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <label>Site<select id="fsi" onchange="renderT()"></select></label>
 <label>Tipe<select id="ft" onchange="renderT()"></select></label>
 <label>Dokumen<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select></label>
-<label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="na">Tanpa data</option></select></label>
+<label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="pp">Dalam Proses Perpanjang</option><option value="na">Tanpa data</option></select></label>
 <label>Bulan<select id="fm"><option value="">Semua</option></select></label>
 <label>Tahun<select id="fy"><option value="">Semua</option></select></label>
 <label>Start date<input type="date" id="f0"></label><label>End date<input type="date" id="fe"></label>
@@ -127,7 +128,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)
 function render(){
 const sv=$('#fsi').value,sites=[...new Set(ROWS.map(r=>r.n).filter(Boolean))].sort();
 $('#fsi').innerHTML='<option value="">Semua site</option>'+sites.map(t=>`<option${t==sv?' selected':''}>${t}</option>`).join('');
-$('#sub').textContent=sites.length==1?sites[0]:'';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
 $('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
 if($('#fd').options.length<2)DOCS.forEach((d,i)=>$('#fd').add(new Option(d,i)));
@@ -143,7 +143,7 @@ const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs')
 return ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
 if($('#fsi').value&&r.n!=$('#fsi').value)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
 if(!s&&!dOn)return true;
-return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||st(r.d[i]).k==s)&&(!dOn||inR(pd(r.d[i]))))})
+return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i]):st(r.d[i]).k==s))&&(!dOn||inR(pd(r.d[i]))))})
 .sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
 function srt(k){SO=SO.k===k?{k,d:-SO.d}:{k,d:1};renderT()}
 const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span><i class="rz" onmousedown="rz(event)" onclick="event.stopPropagation()" ondblclick="rzReset()"></i></th>';
@@ -193,14 +193,14 @@ if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
 hold=Date.now()+10000;
 try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)})}catch(e){return alert('Gagal mengirim: '+e)}
 closeM();render()}
-function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0};rs.forEach(r=>ix.forEach(i=>c[st(r.d[i]).k]++));return c}
+function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0,pp:0};rs.forEach(r=>ix.forEach(i=>{c[st(r.d[i]).k]++;if(/proses|^1$/i.test(r.s[i]))c.pp++}));return c}
 function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
 const esc=s=>String(s).replace(/'/g,"\\'");
 const nb=(c,k,t,d)=>`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')">${c[k]}</span>`;
 function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="w7" style="width:${c.w7/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
 function renderD(){
-const all=cnt(ROWS,[0,1,2,3,4]),pr=ROWS.reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','na'];
-const H='<tr><th>{h}</th><th>Expired</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Berlaku</th><th>Tanpa data</th><th>Proporsi</th></tr>';
+const all=cnt(ROWS,[0,1,2,3,4]),pr=ROWS.reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','pp'];
+const H='<tr><th>{h}</th><th>Expired</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Berlaku</th><th>Dalam Proses Perpanjang</th><th>Proporsi</th></tr>';
 let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Berlaku</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
 h+='<div class="cd"><h2>Per dokumen ('+ROWS.length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort();
