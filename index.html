@@ -59,10 +59,15 @@ tbody tr:nth-child(even) td{background:#fff}tbody tr:hover td{background:#eef4ff
 #tb td:nth-child(2){font-weight:700;color:var(--navy)}
 .cd td.ex{background:var(--ex);color:var(--exc)}.cd td.wa{background:#fff0b3;color:var(--wac)}.cd td.w7{background:#ffd54a;color:#4d3300}
 td.c.ex{background:var(--ex)}td.c.wa{background:#fff0b3}td.c.w7{background:#ffd54a}
+th,td{border-bottom:1px solid #c5d0e2;border-right:1px solid #c5d0e2}
+table{border-left:1px solid #c5d0e2}
+th{border-bottom:1px solid #0b2556;border-right:1px solid #ffffff40}
+td.c.ok,td.c.na{background:#fff;color:var(--tx)}
+tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
-<label>PIN<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
+<label>Password<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
 <div id="le"></div><div class="bt2"><button id="lb" onclick="doLogin()">Login</button></div></div></div>
 <header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada<small id="sub">NDC Jababeka HCI</small></span></h1>
 <button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
@@ -103,13 +108,13 @@ function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'tb act':'tb';$('#b2').className=x=='d'?'tb act':'tb';$('#hb').hidden=x!='t'}
-function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan PIN.';return}$('#le').textContent='Memeriksa…';load(false)}
-function logout(){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#lp').value='';$('#le').textContent='';$('#lg').hidden=false}
+function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
+function logout(k){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
 if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
 window[cb]=r=>{busy=false;s.remove();delete window[cb];
-if(r.error){logout();$('#le').textContent=r.error;return}
+if(r.error){logout(1);$('#le').textContent=r.error;return}
 sessionStorage.setItem('pin',PIN);sessionStorage.setItem('usr',USR);$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID');
 if(q&&Date.now()<hold)return;
 const g=JSON.stringify(r.rows);if(g==sig)return;sig=g;ROWS=r.rows;render()};
