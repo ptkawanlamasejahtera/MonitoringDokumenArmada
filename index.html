@@ -20,11 +20,11 @@ input,select{padding:9px 10px;border:1px solid #cfdaec;border-radius:8px;backgro
 .bar button{height:38px}#bs{background:#0d3a8f}
 .inf{background:#e4eefc;border:1px solid #c9dcf7;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px;color:#26385a}.inf::before{content:"ⓘ";color:var(--pri);margin-right:8px;font-weight:700}
 .w{overflow:auto;background:var(--cd);border:1px solid var(--bd);border-radius:12px;max-height:calc(100vh - 270px);box-shadow:0 1px 4px #1a2b4a14}
-table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:8px 12px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
+table{border-collapse:collapse;width:100%;font-size:12.5px}th,td{padding:4px 8px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
 th{position:sticky;top:0;background:var(--navy);color:#fff;z-index:1;cursor:pointer;user-select:none;font-weight:600}th.nc{cursor:default}th.d,td.c{text-align:center}th .so{opacity:.55;font-size:10px;margin-left:6px}
 tbody tr:nth-child(even) td{background:#f8fafd}tbody tr:hover td{background:#eef4ff}
 td.c{cursor:pointer}td.c:hover{outline:2px solid var(--pri);outline-offset:-2px}
-td small{display:block;color:var(--pri);font-weight:600;font-size:11px}td small.mt{color:var(--mu)}
+.pl{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:1px}.pl.o{background:#dcf5e4;color:#17692f}.pl.e{background:#fde0e0;color:#c0262d}.pl.p{background:#ffe5cf;color:#c2500a}.pl.b{background:#eef0f3;color:#444}
 td.c.ex,.ex{background:var(--ex);color:var(--exc)}td.c.wa,.wa{background:var(--wa);color:var(--wac)}td.c.w7,.w7{background:#ffd54a;color:#4d3300;font-weight:600}
 tbody td.c.ok,tbody td.c.na{color:inherit}.ok{background:var(--ok);color:var(--okc)}.na{background:var(--na);color:var(--mu)}
 .k{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
@@ -64,7 +64,7 @@ tbody td.c.ok,tbody td.c.na{color:inherit}.ok{background:var(--ok);color:var(--o
 </main>
 <div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
 <label>Tanggal masa berlaku<input type="date" id="md"></label>
-<label>Status<select id="mp"><option>Aktif</option><option>Mati</option><option>Proses Perpanjang</option></select></label>
+<label>Status<select id="mp" onchange="pp()"><option>Berlaku</option><option>Expired</option><option>Dalam Proses Perpanjang</option><option>Belum Ada Dokumen</option></select><div id="mpv" style="margin-top:6px"></div></label>
 <label>Upload dokumen (PDF/foto, maks 4 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
 <div class="bt2"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Save</button></div></div></div>
@@ -122,21 +122,23 @@ function renderT(){
 const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen.';
 $('#tb').innerHTML='<tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
 rows.map(([r,ri],n)=>`<tr><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
-const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}${LAB(r.s[i])}</td>`}).join('')+'</tr>').join('')}
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('')}
 $('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
-const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i]))});return a});
+const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
 const csv='\ufeff'+[h,...rows].map(a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
 const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));el.download='monitoring-dokumen-armada.csv';el.click()}
-const SN=x=>{x=String(x==null?'':x).toLowerCase();return x=='mati'?'Mati':(x.includes('proses')||x=='1')?'Proses Perpanjang':'Aktif'};
-const LAB=x=>(x=SN(x))=='Mati'?'<small class="mt">⛔ Mati</small>':x=='Aktif'?'':'<small>⏳ Proses Perpanjang</small>';
+const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada Dokumen':'b'};
+const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x=='1')return'Dalam Proses Perpanjang';if(x.includes('expired')||x=='mati')return'Expired';if(x.includes('belum'))return'Belum Ada Dokumen';if(x.includes('berlaku')||x=='aktif')return'Berlaku';const k=st(d).k;return k=='na'?'Belum Ada Dokumen':k=='ex'?'Expired':'Berlaku'};
+const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<span class="pl '+PC[v]+'">'+v+'</span>'};
+function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
 function pv(i){const f=i.files[0];if(f&&f.type.startsWith('image/'))$('#mv').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px">';else if(f)$('#mv').innerHTML='<p class="mu">File dipilih: '+f.name+'</p>'}
 const dl=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m?'https://drive.google.com/uc?export=download&id='+m[1]:u};
 function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
 $('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
-$('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i]);$('#mf').value='';
+$('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i],r.d[i]);pp();$('#mf').value='';
 const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
 $('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a>';
 $('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
@@ -144,9 +146,10 @@ $('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
 async function save(){
-const dv=$('#md').value,f=$('#mf').files[0],p=$('#mp').value;
+const dv=$('#md').value,f=$('#mf').files[0],sel=$('#mp').value;
 if(f&&f.size>4e6)return alert('File maksimal 4 MB.');
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
+const p=sel===SN('',dt||cur.r.d[cur.i])?'':sel;
 const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,status:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
 if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
 hold=Date.now()+10000;
@@ -158,15 +161,15 @@ const esc=s=>String(s).replace(/'/g,"\\'");
 const nb=(c,k,t,d)=>`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')">${c[k]}</span>`;
 function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="w7" style="width:${c.w7/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
 function renderD(){
-const all=cnt(ROWS,[0,1,2,3,4]),pr=ROWS.reduce((a,r)=>a+r.s.filter(x=>SN(x)=='Proses Perpanjang').length,0),K=['ex','w7','wa','ok','na'];
+const all=cnt(ROWS,[0,1,2,3,4]),pr=ROWS.reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','na'];
 const H='<tr><th>{h}</th><th>Sudah lewat</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Aman</th><th>Tanpa data</th><th>Proporsi</th></tr>';
-let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Sudah lewat</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Aman</div><div><b>${pr}</b>⏳ Proses Perpanjang</div></div><div class="g2">`;
+let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Sudah lewat</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Aman</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
 h+='<div class="cd"><h2>Per dokumen ('+ROWS.length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort();
 h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=ROWS.filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${K.map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div></div>';
 const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k=='wa'||z.k=='w7')L.push({r,ri,i,n:z.n,d:z.d,k:z.k})}));L.sort((a,b)=>a.n-b.n);
 h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): ${L.length} dokumen</h2><table><tr><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr>`+
-L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${SN(x.r.s[x.i])=='Aktif'?'–':SN(x.r.s[x.i])}</td></tr>`).join('')+'</table></div>';
+L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.r.s[x.i]?SN(x.r.s[x.i],x.r.d[x.i]):'–'}</td></tr>`).join('')+'</table></div>';
 $('#sd').innerHTML=h}
 load();
 </script></body></html>
