@@ -39,13 +39,34 @@ tbody td.c.ok,tbody td.c.na{color:inherit}.ok{background:var(--ok);color:var(--o
 #lg{background:linear-gradient(135deg,#0b3a8c,#1d63d6);z-index:10}.mc{background:var(--cd);border-radius:14px;padding:24px;width:100%;max-width:520px;max-height:94vh;overflow:auto}.mc h3{margin:0 0 4px;font-size:18px}.mc label{display:block;margin:12px 0 4px;font-weight:600;font-size:13px}.mc input,.mc select{width:100%}
 .bt2{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}#le{color:var(--exc);margin-top:8px;min-height:18px}
 @media(max-width:900px){.k{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}header{flex-wrap:wrap}}
+.lg{width:48px;height:30px}
+header{min-height:80px;border-radius:0 0 16px 16px;background:linear-gradient(90deg,#0a3480 0%,#0d44a6 38%,rgba(16,80,190,.3) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='76'%3E%3Cg fill='white' fill-opacity='.2'%3E%3Crect x='6' y='24' width='84' height='36' rx='3'/%3E%3Cpath d='M94 60V34l8-8h26l10 14v20z'/%3E%3Ccircle cx='28' cy='62' r='7'/%3E%3Ccircle cx='70' cy='62' r='7'/%3E%3Ccircle cx='122' cy='62' r='7'/%3E%3C/g%3E%3C/svg%3E") right bottom/auto 100% repeat-x,#1558c8}
+header h1 small{display:block;font-size:14px;font-weight:500;opacity:.9;margin-top:2px}
+#hb{display:flex;gap:8px;margin:0 6px}#hb[hidden]{display:none}
+.hq{background:#ffffff26;color:#fff;border:1px solid #ffffff66}.hr{background:#fff;color:#14336b}.he{background:#1e63d6;color:#fff;border:1px solid #ffffff55}
+.bar{background:#e6eefa;border:1px solid #d3e1f6;padding:16px 18px;gap:14px}
+.bar label{color:#14336b;font-size:13px}
+.bar input,.bar select{height:42px;border-radius:10px;border:1px solid #d3deef;padding:0 12px}.sr input{padding-right:36px}.sr svg{top:13px}
+.bar button{height:42px;border-radius:10px;padding:0 24px;font-size:15px}
+.inf{display:flex;align-items:center;background:#e6eefa;border:1px solid #d3e1f6;border-radius:10px;padding:9px 14px}
+.inf::before{content:"i";display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:var(--pri);color:#fff;font-weight:700;font-size:12px;margin-right:10px;flex:none}
+.w{border-radius:12px;padding:0}
+table{border-collapse:separate;border-spacing:0;font-size:13px}
+th,td{padding:6px 10px;border-bottom:2px solid #fff;border-right:2px solid #fff;background:#fff}
+th{text-align:center;position:sticky;padding:9px 24px 9px 10px;background:var(--navy);border-right:1px solid #ffffff22}
+.so{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin:0}
+tbody tr:nth-child(even) td{background:#fff}tbody tr:hover td{background:#eef4ff}
+#tb td:nth-child(2){font-weight:700;color:var(--navy)}
+.cd td.ex{background:var(--ex);color:var(--exc)}.cd td.wa{background:#fff0b3;color:var(--wac)}.cd td.w7{background:#ffd54a;color:#4d3300}
+td.c.ex{background:var(--ex)}td.c.wa{background:#fff0b3}td.c.w7{background:#ffd54a}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
 <label>PIN<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
 <div id="le"></div><div class="bt2"><button id="lb" onclick="doLogin()">Login</button></div></div></div>
-<header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg>Monitoring Dokumen Armada</h1>
+<header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada<small id="sub">NDC Jababeka HCI</small></span></h1>
 <button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
+<span id="hb"><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
 <span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
 <main>
 <section id="st">
@@ -57,7 +78,7 @@ tbody td.c.ok,tbody td.c.na{color:inherit}.ok{background:var(--ok);color:var(--o
 <label>Bulan<select id="fm"><option value="">Semua</option></select></label>
 <label>Tahun<select id="fy"><option value="">Semua</option></select></label>
 <label>Start date<input type="date" id="f0"></label><label>End date<input type="date" id="fe"></label>
-<button id="bs" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="g" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></div>
+<button id="bs" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button></div>
 <div class="inf" id="inf"></div>
 <div class="w"><table id="tb"></table></div></section>
 <section id="sd" hidden></section>
@@ -81,7 +102,7 @@ m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
 function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'tb act':'tb';$('#b2').className=x=='d'?'tb act':'tb'}
+function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'tb act':'tb';$('#b2').className=x=='d'?'tb act':'tb';$('#hb').hidden=x!='t'}
 function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan PIN.';return}$('#le').textContent='Memeriksa…';load(false)}
 function logout(){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#lp').value='';$('#le').textContent='';$('#lg').hidden=false}
 function load(q){
@@ -99,6 +120,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)
 function render(){
 const sv=$('#fsi').value,sites=[...new Set(ROWS.map(r=>r.n).filter(Boolean))].sort();
 $('#fsi').innerHTML='<option value="">Semua site</option>'+sites.map(t=>`<option${t==sv?' selected':''}>${t}</option>`).join('');
+$('#sub').textContent=sites.length==1?sites[0]:'';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
 $('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
 if($('#fd').options.length<2)DOCS.forEach((d,i)=>$('#fd').add(new Option(d,i)));
