@@ -79,7 +79,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <label>Site<select id="fsi" onchange="renderT()"></select></label>
 <label>Tipe<select id="ft" onchange="renderT()"></select></label>
 <label>Dokumen<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select></label>
-<label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Sudah lewat</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Aman</option><option value="na">Tanpa data</option></select></label>
+<label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="na">Tanpa data</option></select></label>
 <label>Bulan<select id="fm"><option value="">Semua</option></select></label>
 <label>Tahun<select id="fy"><option value="">Semua</option></select></label>
 <label>Start date<input type="date" id="f0"></label><label>End date<input type="date" id="fe"></label>
@@ -98,7 +98,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyv_BlH1ktlaQ5ri2OzKt26-eS5xMuKz2xYSoFBAv-o2bFacYj0dwV0v9Jughskcfqz/exec';
 const DOCS=['PAJAK','STNK','KIR','SIPA','IBM'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
-const LB={ex:'Sudah lewat',w7:'≤ 7 hari',wa:'8–30 hari',ok:'Aman',na:'Tanpa data'};
+const LB={ex:'Expired',w7:'≤ 7 hari',wa:'8–30 hari',ok:'Berlaku',na:'Tanpa data'};
 const T0=new Date();T0.setHours(0,0,0,0);
 let SO={k:'',d:1},ROWS=[],PIN=sessionStorage.getItem('pin')||'',USR=sessionStorage.getItem('usr')||'',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
 const $=s=>document.querySelector(s);
@@ -189,8 +189,8 @@ const nb=(c,k,t,d)=>`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')
 function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="w7" style="width:${c.w7/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
 function renderD(){
 const all=cnt(ROWS,[0,1,2,3,4]),pr=ROWS.reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','na'];
-const H='<tr><th>{h}</th><th>Sudah lewat</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Aman</th><th>Tanpa data</th><th>Proporsi</th></tr>';
-let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Sudah lewat</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Aman</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
+const H='<tr><th>{h}</th><th>Expired</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Berlaku</th><th>Tanpa data</th><th>Proporsi</th></tr>';
+let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Berlaku</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
 h+='<div class="cd"><h2>Per dokumen ('+ROWS.length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort();
 h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=ROWS.filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${K.map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div></div>';
