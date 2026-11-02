@@ -69,6 +69,10 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .n.pp{background:#ffe5cf;color:#c2500a}
 #toast{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:30;padding:12px 22px;border-radius:10px;color:#fff;font-weight:600;box-shadow:0 8px 24px #0004;max-width:90vw;text-align:center}
 .t-ok{background:#16a34a}.t-info{background:#1e63d6}.t-warn{background:#d97706}
+.pl.dc{background:#16a34a;color:#fff;box-shadow:0 0 0 1px #fff}.pl.up{background:#e5e7eb;color:#374151}
+.dv{display:inline-block;width:1px;height:20px;background:#c5d0e2;margin:0 0 0 8px;vertical-align:-6px}
+.di{display:inline-block;margin:-4px 0 -4px 8px;vertical-align:-9px;line-height:0;text-decoration:none;cursor:pointer}
+.di svg{width:27px;height:28px;overflow:visible}.di:hover svg{filter:brightness(.92)}.di.up{opacity:.45;filter:grayscale(1)}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -157,10 +161,10 @@ return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i])
 function srt(k){SO=SO.k===k?{k,d:-SO.d}:{k,d:1};renderT()}
 const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span><i class="rz" onmousedown="rz(event)" onclick="event.stopPropagation()" ondblclick="rzReset()"></i></th>';
 function renderT(){
-const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
+const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Ikon scan dokumen biru berarti file sudah diunggah (klik ikon untuk melihat file). Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
 $('#tb').innerHTML='<colgroup>'+'<col>'.repeat(9)+'</colgroup><tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
 rows.map(([r,ri],n)=>`<tr><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
-const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('');applyW()}
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${DOCB(r.l[i])}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('');applyW()}
 $('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
 let W=null;try{W=JSON.parse(localStorage.getItem('cw')||'null')}catch(e){}
 function applyW(){const t=$('#tb');if(!W||W.length!=9){W=null;t.style.tableLayout='';t.style.width='';return}
@@ -195,6 +199,8 @@ const csv='\ufeff'+[h,...rows].map(a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+
 const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));el.download='monitoring-dokumen-armada.csv';el.click()}
 const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada Dokumen':'b'};
 const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x=='1')return'Dalam Proses Perpanjang';if(x.includes('expired')||x=='mati')return'Expired';if(x.includes('belum'))return'Belum Ada Dokumen';if(x.includes('berlaku')||x=='aktif')return'Berlaku';const k=st(d).k;return k=='na'?'Belum Ada Dokumen':k=='ex'?'Expired':'Berlaku'};
+const DI='<svg viewBox="0 -3 30 31"><rect x="0" y="4" width="24" height="24" rx="6" fill="#dbe9fb"/><path d="M4 12v-2a2 2 0 012-2h2M16 8h2a2 2 0 012 2v2M20 20v2a2 2 0 01-2 2h-2M8 24H6a2 2 0 01-2-2v-2" stroke="#1d63d6" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M9 11h4l3 3v6a1 1 0 01-1 1H9a1 1 0 01-1-1v-8a1 1 0 011-1z" fill="#1d63d6"/><path d="M10 15.5h3.5M10 18h3.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/><path d="M24 4l2.4-2.6M26.3 7.6l3-.8M21.8 1.2l.6-3" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
+const DOCB=u=>u?'<span class="dv"></span>'+(u=='#'?'<span class="di up" title="Mengunggah…">'+DI+'</span>':'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Dokumen sudah diunggah. Klik untuk melihat." onclick="event.stopPropagation()">'+DI+'</a>'):'';
 const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<span class="pl '+PC[v]+'">'+v+'</span>'};
 function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
