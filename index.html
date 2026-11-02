@@ -76,6 +76,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .kt{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:3px;padding:2px 12px;border-radius:14px;font-size:11.5px;font-weight:700;line-height:1.5}
 .kt svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;flex:none}
 .kt.p{background:#ffedc7;color:#c2500a}.kt.e{background:#fde0e0;color:#c0262d}.kt.b{background:#eef0f3;color:#444}.kt.o{background:#dcf5e4;color:#17692f}
+#toast{top:auto;bottom:26px}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -143,7 +144,7 @@ if(q&&Date.now()<hold)return;
 const g=JSON.stringify(r.rows);if(g==sig)return;sig=g;ROWS=r.rows;render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
-setInterval(()=>{if(!document.hidden&&$('#mo').hidden)load(true)},5000);
+setInterval(()=>{if(!document.hidden&&$('#mo').hidden&&Date.now()>=hold)load(true)},5000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
 function render(){
 const sv=$('#fsi').value,sites=[...new Set(ROWS.map(r=>r.n).filter(Boolean))].sort();
@@ -191,14 +192,16 @@ const site=$('#as').value.trim(),k=$('#ak').value.trim().toUpperCase(),p=$('#ap'
 if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
 if(ROWS.some(r=>r.k.toUpperCase()==k))return alert('Kode armada '+k+' sudah ada.');
 const d=DOCS.map((_,i)=>fd($('#ad'+i).value));hold=Date.now()+10000;
-try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d})})}catch(e){return alert('Gagal mengirim: '+e)}
-ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render();toast('Menyimpan…','info',0);confirmSave(rows=>rows.some(x=>String(x.k).toUpperCase()==k),'Berhasil ditambahkan: '+k)}
+const pl={user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d};
+ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render();toast('Menyimpan…','info',0);hold=Date.now()+60000;
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(r=>r.json()).then(x=>{hold=0;if(x.error){toast('⚠️ Gagal menambah: '+x.error,'warn',9000);sig='';load(true);return}sig='';toast('✅ Berhasil ditambahkan: '+k,'ok',4000)})
+.catch(()=>setTimeout(()=>confirmSave(rows=>rows.some(x=>String(x.k).toUpperCase()==k),'Berhasil ditambahkan: '+k),800))}
 let tt;function toast(m,t,ms){const e=$('#toast');e.className='t-'+(t||'info');e.textContent=m;e.style.display='block';clearTimeout(tt);if(ms!==0)tt=setTimeout(()=>e.style.display='none',ms||4000)}
 function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb(null)};
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+n;document.body.appendChild(s)}
 function confirmSave(check,msg,n){n=n||0;jp(x=>{
 if(x&&x.rows&&check(x.rows)){hold=0;ROWS=x.rows;sig=JSON.stringify(x.rows);render();toast('✅ '+msg,'ok',5000);return}
-if(n>=28){toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
+if(n>=28){hold=0;toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
 setTimeout(()=>confirmSave(check,msg,n+1),1500)})}
 async function cmp(f){
 if(!f.type.startsWith('image/')||f.size<300000)return f;
@@ -246,11 +249,15 @@ toast('Menyimpan…','info',0);const f=f0?await cmp(f0):null;
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
 const p=sel===SN('',dt||cur.r.d[cur.i])?'':sel;
 const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,status:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
-const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i];
+const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i],rw=cur.r;
 if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
-hold=Date.now()+10000;toast('Menyimpan…','info',0);
-closeM();render();fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)}).catch(e=>toast('⚠️ Gagal mengirim: '+e,'warn',8000));
-setTimeout(()=>confirmSave(rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},'Berhasil disimpan: '+DOCS[di]+' – '+kd),800)}
+hold=Date.now()+60000;
+const chk=rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},okm='Berhasil disimpan: '+DOCS[di]+' – '+kd;
+closeM();render();
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)}).then(r=>r.json()).then(x=>{hold=0;
+if(x.error){toast('⚠️ Gagal menyimpan: '+x.error,'warn',9000);sig='';load(true);return}
+if(x.link)rw.l[di]=x.link;sig='';render();toast('✅ '+okm,'ok',4000)})
+.catch(()=>setTimeout(()=>confirmSave(chk,okm),800))}
 function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0,pp:0};rs.forEach(r=>ix.forEach(i=>{c[st(r.d[i]).k]++;if(/proses|^1$/i.test(r.s[i]))c.pp++}));return c}
 function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
 const esc=s=>String(s).replace(/'/g,"\\'");
