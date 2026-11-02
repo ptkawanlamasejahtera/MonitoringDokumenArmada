@@ -77,7 +77,12 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
 <label>Password<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
-<div id="le"></div><div class="bt2"><button id="lb" onclick="doLogin()">Login</button></div></div></div>
+<div id="le"></div><div class="bt2" style="justify-content:space-between;align-items:center"><a href="#" onclick="fpShow();return false" style="color:var(--pri);font-size:13px">Lupa password?</a><button id="lb" onclick="doLogin()">Login</button></div>
+<div id="fp" hidden style="margin-top:14px;border-top:1px solid var(--bd);padding-top:12px"><b>Reset password</b>
+<p class="mu" style="margin:4px 0 8px">Isi username di atas, lalu kode reset akan dikirim ke email admin.</p>
+<button class="g" onclick="fpSend()">Kirim kode ke email</button>
+<div id="fs2" hidden><label>Kode reset (6 digit)<input id="fc" inputmode="numeric" maxlength="6"></label><label>Password baru (min. 6 karakter)<input id="fn" type="password" autocomplete="new-password"></label><label>Ulangi password baru<input id="fn2" type="password" autocomplete="new-password"></label><button onclick="fpReset()" style="margin-top:12px">Simpan password baru</button></div>
+<div id="fm2" style="margin-top:8px;min-height:18px"></div></div></div></div>
 <header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
 <button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
 <span id="hb"><button class="hq" onclick="openA()"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Armada</button><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
@@ -124,7 +129,7 @@ const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'num
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'tb act':'tb';$('#b2').className=x=='d'?'tb act':'tb';$('#hb').hidden=x!='t'}
 function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
-function logout(k){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
+function logout(k){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
 if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
@@ -190,8 +195,24 @@ function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+n;document.body.appendChild(s)}
 function confirmSave(check,msg,n){n=n||0;jp(x=>{
 if(x&&x.rows&&check(x.rows)){hold=0;ROWS=x.rows;sig=JSON.stringify(x.rows);render();toast('✅ '+msg,'ok',5000);return}
-if(n>=12){toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
-setTimeout(()=>confirmSave(check,msg,n+1),3000)})}
+if(n>=28){toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
+setTimeout(()=>confirmSave(check,msg,n+1),1500)})}
+async function cmp(f){
+if(!f.type.startsWith('image/')||f.size<300000)return f;
+try{const bm=await createImageBitmap(f),sc=Math.min(1,1600/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+const bl=await new Promise(ok=>c.toBlob(ok,'image/jpeg',.82));
+if(bl&&bl.size<f.size)return new File([bl],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'})}catch(e){}
+return f}
+function api(q,cb){const n='a'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb({error:'Gagal terhubung ke Apps Script.'})};s.src=SCRIPT_URL+'?'+q+'&callback='+n;document.body.appendChild(s)}
+function fpShow(){$('#fp').hidden=false;$('#fm2').textContent='';$('#lu').focus()}
+function fpSend(){const u=$('#lu').value.trim();if(!u){$('#fm2').textContent='Isi username di atas dulu.';return}
+$('#fm2').textContent='Mengirim kode…';api('action=forgot&user='+encodeURIComponent(u),x=>{if(x.error){$('#fm2').textContent=x.error;return}$('#fm2').textContent=x.msg;$('#fs2').hidden=false;$('#fc').focus()})}
+function fpReset(){const u=$('#lu').value.trim(),c=$('#fc').value.trim(),n=$('#fn').value,m=$('#fm2');
+if(!/^\d{6}$/.test(c)){m.textContent='Kode harus 6 digit.';return}
+if(n.length<6){m.textContent='Password baru minimal 6 karakter.';return}
+if(n!==$('#fn2').value){m.textContent='Ulangi password baru tidak sama.';return}
+m.textContent='Menyimpan…';api('action=reset&user='+encodeURIComponent(u)+'&code='+c+'&np='+encodeURIComponent(n),x=>{if(x.error){m.textContent=x.error;return}
+m.textContent='Password berhasil diubah. Silakan login dengan password baru.';$('#fs2').hidden=true;['fc','fn','fn2','lp'].forEach(i=>$('#'+i).value='');$('#lp').focus()})}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
@@ -216,16 +237,17 @@ $('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
 async function save(){
-const dv=$('#md').value,f=$('#mf').files[0],sel=$('#mp').value;
-if(f&&f.size>10*1024*1024)return alert('File maksimal 10 MB.');
+const dv=$('#md').value,f0=$('#mf').files[0],sel=$('#mp').value;
+if(f0&&f0.size>10*1024*1024)return alert('File maksimal 10 MB.');
+toast('Menyimpan…','info',0);const f=f0?await cmp(f0):null;
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
 const p=sel===SN('',dt||cur.r.d[cur.i])?'':sel;
 const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,status:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
 const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i];
 if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
 hold=Date.now()+10000;toast('Menyimpan…','info',0);
-try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)})}catch(e){return alert('Gagal mengirim: '+e)}
-closeM();render();confirmSave(rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},'Berhasil disimpan: '+DOCS[di]+' – '+kd)}
+closeM();render();fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)}).catch(e=>toast('⚠️ Gagal mengirim: '+e,'warn',8000));
+setTimeout(()=>confirmSave(rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},'Berhasil disimpan: '+DOCS[di]+' – '+kd),800)}
 function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0,pp:0};rs.forEach(r=>ix.forEach(i=>{c[st(r.d[i]).k]++;if(/proses|^1$/i.test(r.s[i]))c.pp++}));return c}
 function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
 const esc=s=>String(s).replace(/'/g,"\\'");
