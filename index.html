@@ -73,6 +73,9 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .dv{display:inline-block;width:1px;height:20px;background:#c5d0e2;margin:0 0 0 8px;vertical-align:-6px}
 .di{display:inline-block;margin:-4px 0 -4px 8px;vertical-align:-9px;line-height:0;text-decoration:none;cursor:pointer}
 .di svg{width:27px;height:28px;overflow:visible}.di:hover svg{filter:brightness(.92)}.di.up{opacity:.45;filter:grayscale(1)}
+.kt{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:3px;padding:2px 12px;border-radius:14px;font-size:11.5px;font-weight:700;line-height:1.5}
+.kt svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;flex:none}
+.kt.p{background:#ffedc7;color:#c2500a}.kt.e{background:#fde0e0;color:#c0262d}.kt.b{background:#eef0f3;color:#444}.kt.o{background:#dcf5e4;color:#17692f}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -222,7 +225,7 @@ const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada D
 const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x=='1')return'Dalam Proses Perpanjang';if(x.includes('expired')||x=='mati')return'Expired';if(x.includes('belum'))return'Belum Ada Dokumen';if(x.includes('berlaku')||x=='aktif')return'Berlaku';const k=st(d).k;return k=='na'?'Belum Ada Dokumen':k=='ex'?'Expired':'Berlaku'};
 const DI='<svg viewBox="0 -3 30 31"><rect x="0" y="4" width="24" height="24" rx="6" fill="#dbe9fb"/><path d="M4 12v-2a2 2 0 012-2h2M16 8h2a2 2 0 012 2v2M20 20v2a2 2 0 01-2 2h-2M8 24H6a2 2 0 01-2-2v-2" stroke="#1d63d6" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M9 11h4l3 3v6a1 1 0 01-1 1H9a1 1 0 01-1-1v-8a1 1 0 011-1z" fill="#1d63d6"/><path d="M10 15.5h3.5M10 18h3.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/><path d="M24 4l2.4-2.6M26.3 7.6l3-.8M21.8 1.2l.6-3" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
 const DOCB=u=>u?'<span class="dv"></span>'+(u=='#'?'<span class="di up" title="Mengunggah…">'+DI+'</span>':'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Dokumen sudah diunggah. Klik untuk melihat." onclick="event.stopPropagation()">'+DI+'</a>'):'';
-const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<span class="pl '+PC[v]+'">'+v+'</span>'};
+const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<div class="kt '+PC[v]+'"><svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h7M9 17h5"/></svg>'+v+'</div>'};
 function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
 function pv(i){const f=i.files[0];if(f&&f.size>10*1024*1024){alert('File maksimal 10 MB. File yang dipilih '+(f.size/1048576).toFixed(1)+' MB.');i.value='';$('#mv').innerHTML='';return}if(f&&f.type.startsWith('image/'))$('#mv').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px">';else if(f)$('#mv').innerHTML='<p class="mu">File dipilih: '+f.name+'</p>'}
