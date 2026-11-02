@@ -263,10 +263,27 @@ let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w
 h+='<div class="cd"><h2>Per dokumen ('+ROWS.length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
 const ts=[...new Set(ROWS.map(r=>r.t))].sort();
 h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=ROWS.filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${K.map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div></div>';
-const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k=='wa'||z.k=='w7')L.push({r,ri,i,n:z.n,d:z.d,k:z.k})}));L.sort((a,b)=>a.n-b.n);
-h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): ${L.length} dokumen</h2><table><tr><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr>`+
-L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.r.s[x.i]?SN(x.r.s[x.i],x.r.d[x.i]):'–'}</td></tr>`).join('')+'</table></div>';
-$('#sd').innerHTML=h}
+h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): <span id="dlc"></span> dokumen</h2>
+<div class="bar" style="margin-bottom:10px;padding:10px 12px">
+<label>Cari<input value="${DF.q}" placeholder="Kode / nopol…" oninput="dfset('q',this.value)"></label>
+<label>Tipe<select onchange="dfset('t',this.value)"><option value="">Semua tipe</option>${ts.map(t=>`<option${t==DF.t?' selected':''}>${t}</option>`).join('')}</select></label>
+<label>Dokumen<select onchange="dfset('d',this.value)"><option value="">Semua dokumen</option>${DOCS.map((d,i)=>`<option value="${i}"${DF.d!==''&&DF.d==i?' selected':''}>${d}</option>`).join('')}</select></label>
+<label>Sisa waktu<select onchange="dfset('r',this.value)"><option value="">Semua</option><option value="w7"${DF.r=='w7'?' selected':''}>≤ 7 hari</option><option value="wa"${DF.r=='wa'?' selected':''}>8–30 hari</option></select></label>
+<label>Keterangan<select onchange="dfset('k',this.value)"><option value="">Semua</option><option${DF.k=='Dalam Proses Perpanjang'?' selected':''}>Dalam Proses Perpanjang</option><option value="-"${DF.k=='-'?' selected':''}>Tanpa keterangan</option></select></label>
+<button class="g" onclick="dfreset()">Reset</button></div>
+<table><tr><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr><tbody id="dlb"></tbody></table></div>`;
+$('#sd').innerHTML=h;renderDL()}
+let DF={q:'',t:'',d:'',r:'',k:''};
+function dfset(k,v){DF[k]=v;renderDL()}
+function dfreset(){DF={q:'',t:'',d:'',r:'',k:''};renderD()}
+function dlist(){const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k!='wa'&&z.k!='w7')return;
+const kt=r.s[i]?SN(r.s[i],x):'';
+if(DF.q&&!(r.k+r.p).toLowerCase().includes(DF.q.toLowerCase()))return;
+if(DF.t&&r.t!=DF.t)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return;
+if(DF.k&&(DF.k=='-'?kt:kt!=DF.k))return;
+L.push({r,ri,i,n:z.n,d:z.d,k:z.k,kt})}));return L.sort((a,b)=>a.n-b.n)}
+function renderDL(){const L=dlist();$('#dlc').textContent=L.length;
+$('#dlb').innerHTML=L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}</td></tr>`).join('')||'<tr><td colspan="7" class="mu">Tidak ada data yang cocok.</td></tr>'}
 try{sessionStorage.clear()}catch(e){}
 load();
 </script></body></html>
