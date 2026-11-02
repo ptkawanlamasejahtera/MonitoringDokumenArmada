@@ -67,6 +67,8 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .rz{position:absolute;right:-3px;top:0;bottom:0;width:9px;cursor:col-resize;z-index:3}.rz:hover{background:#ffffff66}
 #tb{min-width:100%}#tb td{overflow:hidden;text-overflow:ellipsis}
 .n.pp{background:#ffe5cf;color:#c2500a}
+#toast{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:30;padding:12px 22px;border-radius:10px;color:#fff;font-weight:600;box-shadow:0 8px 24px #0004;max-width:90vw;text-align:center}
+.t-ok{background:#16a34a}.t-info{background:#1e63d6}.t-warn{background:#d97706}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -94,9 +96,10 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
 <label>Tanggal masa berlaku<input type="date" id="md"></label>
 <label>Status<select id="mp" onchange="pp()"><option>Berlaku</option><option>Expired</option><option>Dalam Proses Perpanjang</option><option>Belum Ada Dokumen</option></select><div id="mpv" style="margin-top:6px"></div></label>
-<label>Upload dokumen (PDF/foto, maks 4 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
+<label>Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
 <div class="bt2"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Save</button></div></div></div>
+<div id="toast"></div>
 <div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
 <label>Site<input id="as" list="dls"></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
 <label>Masa berlaku dokumen (boleh dikosongkan, bisa diisi nanti)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><small class="mu">PAJAK</small><input type="date" id="ad0"></div><div><small class="mu">STNK</small><input type="date" id="ad1"></div><div><small class="mu">KIR</small><input type="date" id="ad2"></div><div><small class="mu">SIPA</small><input type="date" id="ad3"></div><div><small class="mu">IBM</small><input type="date" id="ad4"></div></div>
@@ -177,7 +180,14 @@ if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
 if(ROWS.some(r=>r.k.toUpperCase()==k))return alert('Kode armada '+k+' sudah ada.');
 const d=DOCS.map((_,i)=>fd($('#ad'+i).value));hold=Date.now()+10000;
 try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d})})}catch(e){return alert('Gagal mengirim: '+e)}
-ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render()}
+ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render();toast('Menyimpan…','info',0);confirmSave(rows=>rows.some(x=>String(x.k).toUpperCase()==k),'Berhasil ditambahkan: '+k)}
+let tt;function toast(m,t,ms){const e=$('#toast');e.className='t-'+(t||'info');e.textContent=m;e.style.display='block';clearTimeout(tt);if(ms!==0)tt=setTimeout(()=>e.style.display='none',ms||4000)}
+function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb(null)};
+s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+n;document.body.appendChild(s)}
+function confirmSave(check,msg,n){n=n||0;jp(x=>{
+if(x&&x.rows&&check(x.rows)){hold=0;ROWS=x.rows;sig=JSON.stringify(x.rows);render();toast('✅ '+msg,'ok',5000);return}
+if(n>=12){toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
+setTimeout(()=>confirmSave(check,msg,n+1),3000)})}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
@@ -188,7 +198,7 @@ const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x
 const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<span class="pl '+PC[v]+'">'+v+'</span>'};
 function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
-function pv(i){const f=i.files[0];if(f&&f.type.startsWith('image/'))$('#mv').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px">';else if(f)$('#mv').innerHTML='<p class="mu">File dipilih: '+f.name+'</p>'}
+function pv(i){const f=i.files[0];if(f&&f.size>10*1024*1024){alert('File maksimal 10 MB. File yang dipilih '+(f.size/1048576).toFixed(1)+' MB.');i.value='';$('#mv').innerHTML='';return}if(f&&f.type.startsWith('image/'))$('#mv').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px">';else if(f)$('#mv').innerHTML='<p class="mu">File dipilih: '+f.name+'</p>'}
 const dl=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m?'https://drive.google.com/uc?export=download&id='+m[1]:u};
 function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
 $('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
@@ -201,14 +211,15 @@ function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
 async function save(){
 const dv=$('#md').value,f=$('#mf').files[0],sel=$('#mp').value;
-if(f&&f.size>4e6)return alert('File maksimal 4 MB.');
+if(f&&f.size>10*1024*1024)return alert('File maksimal 10 MB.');
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
 const p=sel===SN('',dt||cur.r.d[cur.i])?'':sel;
 const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,status:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
+const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i];
 if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
-hold=Date.now()+10000;
+hold=Date.now()+10000;toast('Menyimpan…','info',0);
 try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)})}catch(e){return alert('Gagal mengirim: '+e)}
-closeM();render()}
+closeM();render();confirmSave(rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},'Berhasil disimpan: '+DOCS[di]+' – '+kd)}
 function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0,pp:0};rs.forEach(r=>ix.forEach(i=>{c[st(r.d[i]).k]++;if(/proses|^1$/i.test(r.s[i]))c.pp++}));return c}
 function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
 const esc=s=>String(s).replace(/'/g,"\\'");
