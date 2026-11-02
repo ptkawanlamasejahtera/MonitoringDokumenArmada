@@ -120,7 +120,7 @@ const DOCS=['PAJAK','STNK','KIR','SIPA','IBM'],MN=['Jan','Feb','Mar','Apr','May'
 const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
 const LB={ex:'Expired',w7:'≤ 7 hari',wa:'8–30 hari',ok:'Berlaku',na:'Tanpa data'};
 const T0=new Date();T0.setHours(0,0,0,0);
-let SO={k:'',d:1},ROWS=[],PIN=sessionStorage.getItem('pin')||'',USR=sessionStorage.getItem('usr')||'',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
+let SO={k:'',d:1},ROWS=[],PIN='',USR='',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
 const $=s=>document.querySelector(s);
 function pd(s){s=s||'';let m=/(\d{1,2})[\s-]+([A-Za-z]+)[\s-]+(\d{4})/.exec(s);if(m){const k=MON[m[2].slice(0,3).toLowerCase()];return k==null?null:new Date(+m[3],k,+m[1])}
 m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
@@ -135,7 +135,7 @@ if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
 window[cb]=r=>{busy=false;s.remove();delete window[cb];
 if(r.error){logout(1);$('#le').textContent=r.error;return}
-sessionStorage.setItem('pin',PIN);sessionStorage.setItem('usr',USR);$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID');
+$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID');
 if(q&&Date.now()<hold)return;
 const g=JSON.stringify(r.rows);if(g==sig)return;sig=g;ROWS=r.rows;render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
@@ -264,5 +264,6 @@ const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k=='wa'||
 h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): ${L.length} dokumen</h2><table><tr><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr>`+
 L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.r.s[x.i]?SN(x.r.s[x.i],x.r.d[x.i]):'–'}</td></tr>`).join('')+'</table></div>';
 $('#sd').innerHTML=h}
+try{sessionStorage.clear()}catch(e){}
 load();
 </script></body></html>
