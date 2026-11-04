@@ -77,6 +77,8 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .kt svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;flex:none}
 .kt.p{background:#ffedc7;color:#c2500a}.kt.e{background:#fde0e0;color:#c0262d}.kt.b{background:#eef0f3;color:#444}.kt.o{background:#dcf5e4;color:#17692f}
 #toast{top:auto;bottom:26px}
+.mc textarea{width:100%;padding:9px 10px;border:1px solid #d3deef;border-radius:8px;background:#fff;color:var(--tx);font:inherit;resize:vertical}
+.nt{font-size:11px;font-style:italic;opacity:.85;max-width:200px;margin:2px auto 0;overflow:hidden;text-overflow:ellipsis}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -109,7 +111,8 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 </main>
 <div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
 <label>Tanggal masa berlaku<input type="date" id="md"></label>
-<label>Status<select id="mp" onchange="pp()"><option>Berlaku</option><option>Expired</option><option>Dalam Proses Perpanjang</option><option>Belum Ada Dokumen</option></select><div id="mpv" style="margin-top:6px"></div></label>
+<label>Status<select id="mp" onchange="pp()"><option>Berlaku</option><option>Expired</option><option>Dalam Proses Perpanjang</option><option>Belum Ada Dokumen</option></select><div id="mpv" style="margin-top:6px"></div>
+<label>Keterangan (opsional)<textarea id="mn" rows="2" maxlength="200" placeholder="Contoh: berkas di Samsat, estimasi selesai 10 Nov"></textarea></label></label>
 <label>Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
 <div class="bt2"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Save</button></div></div></div>
@@ -174,7 +177,7 @@ function renderT(){
 const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Ikon scan dokumen biru berarti file sudah diunggah (klik ikon untuk melihat file). Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
 $('#tb').innerHTML='<colgroup>'+'<col>'.repeat(9)+'</colgroup><tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
 rows.map(([r,ri],n)=>`<tr><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
-const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${DOCB(r.l[i])}${LAB(r.s[i],x)}</td>`}).join('')+'</tr>').join('');applyW()}
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${DOCB(r.l[i])}${LAB(r.s[i],x)}${NTB(r,i)}</td>`}).join('')+'</tr>').join('');applyW()}
 $('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
 let W=null;try{W=JSON.parse(localStorage.getItem('cw')||'null')}catch(e){}
 function applyW(){const t=$('#tb');if(!W||W.length!=9){W=null;t.style.tableLayout='';t.style.width='';return}
@@ -240,14 +243,17 @@ h+='<div class="cd"><h2>Riwayat perpanjangan terbaru</h2><table><tr><th>Waktu</t
 H.slice().sort((a,b)=>b.w.localeCompare(a.w)).slice(0,30).map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td><b>${x.k}</b></td><td>${x.p}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${ok(x)?'ok':'ex'}">${x.st}</span></td><td>${x.u||'–'}</td></tr>`).join('')+'</table></div>';
 $('#sk').innerHTML=h}
 function exportCsv(){
-const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
-const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
+const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
+const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
 const csv='\ufeff'+[h,...rows].map(a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
 const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));el.download='monitoring-dokumen-armada.csv';el.click()}
 const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada Dokumen':'b'};
 const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x=='1')return'Dalam Proses Perpanjang';if(x.includes('expired')||x=='mati')return'Expired';if(x.includes('belum'))return'Belum Ada Dokumen';if(x.includes('berlaku')||x=='aktif')return'Berlaku';const k=st(d).k;return k=='na'?'Belum Ada Dokumen':k=='ex'?'Expired':'Berlaku'};
 const DI='<svg viewBox="0 -3 30 31"><rect x="0" y="4" width="24" height="24" rx="6" fill="#dbe9fb"/><path d="M4 12v-2a2 2 0 012-2h2M16 8h2a2 2 0 012 2v2M20 20v2a2 2 0 01-2 2h-2M8 24H6a2 2 0 01-2-2v-2" stroke="#1d63d6" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M9 11h4l3 3v6a1 1 0 01-1 1H9a1 1 0 01-1-1v-8a1 1 0 011-1z" fill="#1d63d6"/><path d="M10 15.5h3.5M10 18h3.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/><path d="M24 4l2.4-2.6M26.3 7.6l3-.8M21.8 1.2l.6-3" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
 const DOCB=u=>u?'<span class="dv"></span>'+(u=='#'?'<span class="di up" title="Mengunggah…">'+DI+'</span>':'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Dokumen sudah diunggah. Klik untuk melihat." onclick="event.stopPropagation()">'+DI+'</a>'):'';
+const NT=(r,i)=>(r.c&&r.c[i])||'';
+const EH=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NTB=(r,i)=>NT(r,i)?'<div class="nt" title="'+EH(NT(r,i))+'">'+EH(NT(r,i))+'</div>':'';
 const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<div class="kt '+PC[v]+'"><svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h7M9 17h5"/></svg>'+v+'</div>'};
 function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
@@ -255,7 +261,7 @@ function pv(i){const f=i.files[0];if(f&&f.size>10*1024*1024){alert('File maksima
 const dl=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m?'https://drive.google.com/uc?export=download&id='+m[1]:u};
 function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
 $('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
-$('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i],r.d[i]);pp();$('#mf').value='';
+$('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i],r.d[i]);pp();$('#mn').value=NT(r,i);$('#mf').value='';
 const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
 $('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a>';
 $('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
@@ -269,7 +275,8 @@ toast('Menyimpan…','info',0);const f=f0?await cmp(f0):null;
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
 const p=sel===SN('',dt||cur.r.d[cur.i])?'':sel;
 const body={user:USR,pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,status:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
-const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i],rw=cur.r;
+const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i],rw=cur.r,note=$('#mn').value.trim(),nChg=note!==NT(cur.r,cur.i);
+if(nChg){body.note=note;cur.r.c=cur.r.c||['','','','',''];cur.r.c[cur.i]=note}
 if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
 hold=Date.now()+60000;
 const chk=rows=>{const x=rows.find(y=>y.k==kd);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},okm='Berhasil disimpan: '+DOCS[di]+' – '+kd;
@@ -310,7 +317,7 @@ if(DF.t&&r.t!=DF.t)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return
 if(DF.k&&(DF.k=='-'?kt:kt!=DF.k))return;
 L.push({r,ri,i,n:z.n,d:z.d,k:z.k,kt})}));return L.sort((a,b)=>a.n-b.n)}
 function renderDL(){const L=dlist();$('#dlc').textContent=L.length;
-$('#dlb').innerHTML=L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}</td></tr>`).join('')||'<tr><td colspan="7" class="mu">Tidak ada data yang cocok.</td></tr>'}
+$('#dlb').innerHTML=L.map(x=>`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}${NT(x.r,x.i)?' · '+EH(NT(x.r,x.i)):''}</td></tr>`).join('')||'<tr><td colspan="7" class="mu">Tidak ada data yang cocok.</td></tr>'}
 try{sessionStorage.clear()}catch(e){}
 load();
 </script></body></html>
