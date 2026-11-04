@@ -88,7 +88,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div id="fs2" hidden><label>Kode reset (6 digit)<input id="fc" inputmode="numeric" maxlength="6"></label><label>Password baru (min. 6 karakter)<input id="fn" type="password" autocomplete="new-password"></label><label>Ulangi password baru<input id="fn2" type="password" autocomplete="new-password"></label><button onclick="fpReset()" style="margin-top:12px">Simpan password baru</button></div>
 <div id="fm2" style="margin-top:8px;min-height:18px"></div></div></div></div>
 <header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
-<button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button>
+<button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button><button id="b3" class="tb" onclick="tab('k')"><svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>KPI Perpanjangan</button>
 <span id="hb"><button class="hq" onclick="openA()"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Armada</button><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
 <span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
 <main>
@@ -105,6 +105,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div class="inf" id="inf"></div>
 <div class="w"><table id="tb"></table></div></section>
 <section id="sd" hidden></section>
+<section id="sk" hidden></section>
 </main>
 <div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
 <label>Tanggal masa berlaku<input type="date" id="md"></label>
@@ -131,7 +132,7 @@ m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
 function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'tb act':'tb';$('#b2').className=x=='d'?'tb act':'tb';$('#hb').hidden=x!='t'}
+function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';['b1','b2','b3'].forEach((b,i)=>$('#'+b).className='tb'+('tdk'[i]==x?' act':''));$('#hb').hidden=x!='t'}
 function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
 function logout(k){sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
@@ -141,7 +142,7 @@ window[cb]=r=>{busy=false;s.remove();delete window[cb];
 if(r.error){logout(1);$('#le').textContent=r.error;return}
 $('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID');
 if(q&&Date.now()<hold)return;
-const g=JSON.stringify(r.rows);if(g==sig)return;sig=g;ROWS=r.rows;render()};
+const g=JSON.stringify([r.rows,r.hist]);if(g==sig)return;sig=g;ROWS=r.rows;HIST=r.hist||[];render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
 setInterval(()=>{if(!document.hidden&&$('#mo').hidden&&Date.now()>=hold)load(true)},5000);
@@ -156,7 +157,7 @@ if($('#fm').options.length<2)['Januari','Februari','Maret','April','Mei','Juni',
 const ys=[...new Set(ROWS.flatMap(r=>r.d.map(x=>{const d=pd(x);return d&&d.getFullYear()})).filter(Boolean))].sort(),yv=$('#fy').value;
 $('#fy').innerHTML='<option value="">Semua</option>'+ys.map(y=>`<option${y==yv?' selected':''}>${y}</option>`).join('');
 $('#dls').innerHTML=sites.map(x=>'<option value="'+x+'">').join('');$('#dlt').innerHTML=ts.map(x=>'<option value="'+x+'">').join('');
-renderT();renderD()}
+renderT();renderD();renderK()}
 function show(){F={m:$('#fm').value,y:$('#fy').value,s:$('#f0').value,e:$('#fe').value};renderT()}
 function reset(){['fm','fy','f0','fe'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
 function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F.y&&d.getFullYear()!=F.y)return false;if(F.s&&d<new Date(F.s+'T00:00'))return false;if(F.e&&d>new Date(F.e+'T00:00'))return false;return true}
@@ -200,7 +201,7 @@ let tt;function toast(m,t,ms){const e=$('#toast');e.className='t-'+(t||'info');e
 function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb(null)};
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+n;document.body.appendChild(s)}
 function confirmSave(check,msg,n){n=n||0;jp(x=>{
-if(x&&x.rows&&check(x.rows)){hold=0;ROWS=x.rows;sig=JSON.stringify(x.rows);render();toast('✅ '+msg,'ok',5000);return}
+if(x&&x.rows&&check(x.rows)){hold=0;ROWS=x.rows;HIST=x.hist||HIST;sig=JSON.stringify([x.rows,x.hist]);render();toast('✅ '+msg,'ok',5000);return}
 if(n>=28){hold=0;toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
 setTimeout(()=>confirmSave(check,msg,n+1),1500)})}
 async function cmp(f){
@@ -219,6 +220,23 @@ if(n.length<6){m.textContent='Password baru minimal 6 karakter.';return}
 if(n!==$('#fn2').value){m.textContent='Ulangi password baru tidak sama.';return}
 m.textContent='Menyimpan…';api('action=reset&user='+encodeURIComponent(u)+'&code='+c+'&np='+encodeURIComponent(n),x=>{if(x.error){m.textContent=x.error;return}
 m.textContent='Password berhasil diubah. Silakan login dengan password baru.';$('#fs2').hidden=true;['fc','fn','fn2','lp'].forEach(i=>$('#'+i).value='');$('#lp').focus()})}
+let HIST=[],KF={m:'',y:''};
+function kset(k,v){KF[k]=v;renderK()}
+function renderK(){
+const H=HIST.filter(h=>(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)),ok=h=>h.st=='Tepat Waktu';
+const n=H.length,tw=H.filter(ok).length,pct=n?Math.round(tw/n*100):0,avg=n?(H.reduce((a,h)=>a+h.s,0)/n).toFixed(1):'0';
+const yrs=[...new Set(HIST.map(h=>h.tg.slice(0,4)))].sort(),MB=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const row=(nm,hs)=>{const m=hs.length,a=hs.filter(ok).length;return`<tr><td><b>${nm}</b></td><td>${m}</td><td><span class="n ok">${a}</span></td><td><span class="n ex">${m-a}</span></td><td>${m?Math.round(a/m*100)+'%':'–'}</td><td>${m?(hs.reduce((x,h)=>x+h.s,0)/m).toFixed(1):'–'}</td><td><div class="sb"><i class="ok" style="width:${m?a/m*100:0}%"></i><i class="ex" style="width:${m?(m-a)/m*100:0}%"></i></div></td></tr>`};
+const T='<tr><th>{h}</th><th>Total perpanjangan</th><th>Tepat waktu</th><th>Terlambat</th><th>% Tepat waktu</th><th>Rata-rata selisih (hari)</th><th>Proporsi</th></tr>';
+const dd=x=>{const d=pd(x);return d?fmt(d):x};
+let h=`<div class="bar" style="margin-bottom:12px"><label>Bulan<select onchange="kset('m',this.value)"><option value="">Semua</option>${MB.map((m,i)=>`<option value="${i+1}"${KF.m==i+1?' selected':''}>${m}</option>`).join('')}</select></label><label>Tahun<select onchange="kset('y',this.value)"><option value="">Semua</option>${yrs.map(y=>`<option${KF.y==y?' selected':''}>${y}</option>`).join('')}</select></label><span class="mu" style="align-self:center">Tepat waktu = perpanjangan dilakukan sebelum atau tepat pada tanggal expired lama.</span></div>`;
+h+=`<div class="k"><div><b>${n}</b>Total perpanjangan</div><div style="background:var(--ok)"><b>${tw}</b>Tepat waktu</div><div class="ex"><b>${n-tw}</b>Terlambat</div><div><b>${pct}%</b>Ketepatan waktu</div><div><b>${avg}</b>Rata-rata hari sebelum expired</div></div>`;
+if(!n){h+='<div class="cd mu">Belum ada data perpanjangan pada periode ini. Data tercatat otomatis setiap kali masa berlaku diperbarui ke tanggal yang lebih baru.</div>';$('#sk').innerHTML=h;return}
+h+='<div class="g2"><div class="cd"><h2>Per dokumen</h2><table>'+T.replace('{h}','Dokumen')+DOCS.map(d=>row(d,H.filter(x=>x.d==d))).join('')+'</table></div>';
+h+='<div class="cd"><h2>Per tipe armada</h2><table>'+T.replace('{h}','Tipe')+[...new Set(H.map(x=>x.t))].sort().map(t=>row(t,H.filter(x=>x.t==t))).join('')+'</table></div></div>';
+h+='<div class="cd"><h2>Riwayat perpanjangan terbaru</h2><table><tr><th>Waktu</th><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th><th>Oleh</th></tr>'+
+H.slice().sort((a,b)=>b.w.localeCompare(a.w)).slice(0,30).map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td><b>${x.k}</b></td><td>${x.p}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${ok(x)?'ok':'ex'}">${x.st}</span></td><td>${x.u||'–'}</td></tr>`).join('')+'</table></div>';
+$('#sk').innerHTML=h}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x))});return a});
