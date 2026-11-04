@@ -220,18 +220,20 @@ if(n.length<6){m.textContent='Password baru minimal 6 karakter.';return}
 if(n!==$('#fn2').value){m.textContent='Ulangi password baru tidak sama.';return}
 m.textContent='Menyimpan…';api('action=reset&user='+encodeURIComponent(u)+'&code='+c+'&np='+encodeURIComponent(n),x=>{if(x.error){m.textContent=x.error;return}
 m.textContent='Password berhasil diubah. Silakan login dengan password baru.';$('#fs2').hidden=true;['fc','fn','fn2','lp'].forEach(i=>$('#'+i).value='');$('#lp').focus()})}
-let HIST=[],KF={m:'',y:''};
+let HIST=[],KF={m:'',y:'',s:'',e:''};
+function kreset(){KF={m:'',y:'',s:'',e:''};renderK()}
 function kset(k,v){KF[k]=v;renderK()}
 function renderK(){
-const H=HIST.filter(h=>(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)),ok=h=>h.st=='Tepat Waktu';
+const H=HIST.filter(h=>(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)&&(!KF.s||h.tg>=KF.s)&&(!KF.e||h.tg<=KF.e)),ok=h=>h.st=='Tepat Waktu';
 const n=H.length,tw=H.filter(ok).length,pct=n?Math.round(tw/n*100):0,avg=n?(H.reduce((a,h)=>a+h.s,0)/n).toFixed(1):'0';
 const yrs=[...new Set(HIST.map(h=>h.tg.slice(0,4)))].sort(),MB=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const row=(nm,hs)=>{const m=hs.length,a=hs.filter(ok).length;return`<tr><td><b>${nm}</b></td><td>${m}</td><td><span class="n ok">${a}</span></td><td><span class="n ex">${m-a}</span></td><td>${m?Math.round(a/m*100)+'%':'–'}</td><td>${m?(hs.reduce((x,h)=>x+h.s,0)/m).toFixed(1):'–'}</td><td><div class="sb"><i class="ok" style="width:${m?a/m*100:0}%"></i><i class="ex" style="width:${m?(m-a)/m*100:0}%"></i></div></td></tr>`};
 const T='<tr><th>{h}</th><th>Total perpanjangan</th><th>Tepat waktu</th><th>Terlambat</th><th>% Tepat waktu</th><th>Rata-rata selisih (hari)</th><th>Proporsi</th></tr>';
 const dd=x=>{const d=pd(x);return d?fmt(d):x};
-let h=`<div class="bar" style="margin-bottom:12px"><label>Bulan<select onchange="kset('m',this.value)"><option value="">Semua</option>${MB.map((m,i)=>`<option value="${i+1}"${KF.m==i+1?' selected':''}>${m}</option>`).join('')}</select></label><label>Tahun<select onchange="kset('y',this.value)"><option value="">Semua</option>${yrs.map(y=>`<option${KF.y==y?' selected':''}>${y}</option>`).join('')}</select></label><span class="mu" style="align-self:center">Tepat waktu = perpanjangan dilakukan sebelum atau tepat pada tanggal expired lama.</span></div>`;
+let h=`<div class="bar" style="margin-bottom:12px"><label>Bulan<select onchange="kset('m',this.value)"><option value="">Semua</option>${MB.map((m,i)=>`<option value="${i+1}"${KF.m==i+1?' selected':''}>${m}</option>`).join('')}</select></label><label>Tahun<select onchange="kset('y',this.value)"><option value="">Semua</option>${yrs.map(y=>`<option${KF.y==y?' selected':''}>${y}</option>`).join('')}</select></label><label>Dari tanggal<input type="date" value="${KF.s}" onchange="kset('s',this.value)"></label><label>Sampai tanggal<input type="date" value="${KF.e}" onchange="kset('e',this.value)"></label><button class="g" onclick="kreset()">Reset</button><span class="mu" style="align-self:center">Tepat waktu = perpanjangan dilakukan sebelum atau tepat pada tanggal expired lama.</span></div>`;
 h+=`<div class="k"><div><b>${n}</b>Total perpanjangan</div><div style="background:var(--ok)"><b>${tw}</b>Tepat waktu</div><div class="ex"><b>${n-tw}</b>Terlambat</div><div><b>${pct}%</b>Ketepatan waktu</div><div><b>${avg}</b>Rata-rata hari sebelum expired</div></div>`;
 if(!n){h+='<div class="cd mu">Belum ada data perpanjangan pada periode ini. Data tercatat otomatis setiap kali masa berlaku diperbarui ke tanggal yang lebih baru.</div>';$('#sk').innerHTML=h;return}
+h+='<div class="cd"><h2>Harian (per tanggal perpanjangan)</h2><div style="max-height:340px;overflow:auto"><table>'+T.replace('{h}','Tanggal')+[...new Set(H.map(x=>x.tg))].sort().reverse().map(d=>row(dd(d),H.filter(x=>x.tg==d))).join('')+'</table></div></div>';
 h+='<div class="g2"><div class="cd"><h2>Per dokumen</h2><table>'+T.replace('{h}','Dokumen')+DOCS.map(d=>row(d,H.filter(x=>x.d==d))).join('')+'</table></div>';
 h+='<div class="cd"><h2>Per tipe armada</h2><table>'+T.replace('{h}','Tipe')+[...new Set(H.map(x=>x.t))].sort().map(t=>row(t,H.filter(x=>x.t==t))).join('')+'</table></div></div>';
 h+='<div class="cd"><h2>Riwayat perpanjangan terbaru</h2><table><tr><th>Waktu</th><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th><th>Oleh</th></tr>'+
