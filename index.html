@@ -150,7 +150,7 @@ if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
 window[cb]=r=>{busy=false;s.remove();delete window[cb];
 if(r.error){logout(1);$('#le').textContent=r.error;return}
-ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');if(ROLE!='admin')tab('t');$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID');
+ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');if(ROLE!='admin')tab('t');$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID')+(r.ver?' · script '+r.ver:' · script lama');
 if(q&&Date.now()<hold)return;
 const g=JSON.stringify([r.rows,r.hist]);if(g==sig)return;sig=g;ROWS=r.rows;HIST=r.hist||[];render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
