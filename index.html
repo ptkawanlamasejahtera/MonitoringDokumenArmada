@@ -174,7 +174,7 @@ function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F
 function frows(){
 const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value,dOn=F.m||F.y||F.s||F.e;
 return ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
-if(SITE&&r.n!=SITE)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
+if(SITE&&grp(r.n)!=SITE)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
 if(!s&&!dOn)return true;
 return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i]):st(r.d[i]).k==s))&&(!dOn||inR(pd(r.d[i]))))})
 .sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
@@ -195,13 +195,13 @@ const mv=ev=>{W[idx]=Math.max(40,w0+ev.clientX-x0);applyW()};
 const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);try{localStorage.setItem('cw',JSON.stringify(W))}catch(e){}};
 document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up)}
 function rzReset(){W=null;try{localStorage.removeItem('cw')}catch(e){}renderT()}
-function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>r.n).filter(Boolean)])];$('#as').innerHTML=ss.map(x=>'<option>'+x+'</option>').join('');$('#as').value=SITE||ss[0];DOCS.forEach((d,i)=>$('#ad'+i).value='');$('#ma').hidden=false}
+function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];$('#as').innerHTML=ss.map(x=>'<option>'+x+'</option>').join('');$('#as').value=SITE||ss[0];DOCS.forEach((d,i)=>$('#ad'+i).value='');$('#ma').hidden=false}
 function closeA(){$('#ma').hidden=true}
 const fd=v=>v?(+v.slice(8)+' '+MN[+v.slice(5,7)-1]+' '+v.slice(0,4)):'';
 async function addA(){if(ROLE!='admin')return;
 const site=$('#as').value.trim(),k=$('#ak').value.trim().toUpperCase(),p=$('#ap').value.trim().toUpperCase().replace(/\s+/g,''),t=$('#at').value.trim().toUpperCase();
 if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
-if(ROWS.some(r=>r.k.toUpperCase()==k&&r.n==site))return alert('Kode armada '+k+' sudah ada di site '+site+'.');
+if(ROWS.some(r=>r.k.toUpperCase()==k&&grp(r.n)==grp(site)))return alert('Kode armada '+k+' sudah ada di site '+site+'.');
 const d=DOCS.map((_,i)=>fd($('#ad'+i).value));hold=Date.now()+10000;
 const pl={user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d};
 ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render();toast('Menyimpan…','info',0);hold=Date.now()+60000;
@@ -234,7 +234,7 @@ let HIST=[],KF={m:'',y:'',s:'',e:''};
 function kreset(){KF={m:'',y:'',s:'',e:''};renderK()}
 function kset(k,v){KF[k]=v;renderK()}
 function renderK(){
-const H=HIST.filter(h=>(!SITE||h.n==SITE)&&(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)&&(!KF.s||h.tg>=KF.s)&&(!KF.e||h.tg<=KF.e)),ok=h=>h.st=='Tepat Waktu';
+const H=HIST.filter(h=>(!SITE||grp(h.n)==SITE)&&(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)&&(!KF.s||h.tg>=KF.s)&&(!KF.e||h.tg<=KF.e)),ok=h=>h.st=='Tepat Waktu';
 const n=H.length,tw=H.filter(ok).length,pct=n?Math.round(tw/n*100):0,avg=n?(H.reduce((a,h)=>a+h.s,0)/n).toFixed(1):'0';
 const yrs=[...new Set(HIST.map(h=>h.tg.slice(0,4)))].sort(),MB=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const row=(nm,hs)=>{const m=hs.length,a=hs.filter(ok).length;return`<tr><td><b>${nm}</b></td><td>${m}</td><td><span class="n ok">${a}</span></td><td><span class="n ex">${m-a}</span></td><td>${m?Math.round(a/m*100)+'%':'–'}</td><td>${m?(hs.reduce((x,h)=>x+h.s,0)/m).toFixed(1):'–'}</td><td><div class="sb"><i class="ok" style="width:${m?a/m*100:0}%"></i><i class="ex" style="width:${m?(m-a)/m*100:0}%"></i></div></td></tr>`};
@@ -260,10 +260,13 @@ if(x.mime.startsWith('image/'))fr.srcdoc='<html><body style="margin:0"><img src=
 else{fr.src=url;fr.onload=()=>setTimeout(()=>{try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.open(url)}},500)}
 document.body.appendChild(fr);$('#toast').style.display='none';
 setTimeout(()=>{fr.remove();URL.revokeObjectURL(url)},120000)})}
-const DEF_SITES=['NDC Jababeka HCI','NDC Jababeka AHI','NDC Jababeka KLS'];
-const VR=()=>SITE?ROWS.filter(r=>r.n==SITE):ROWS;
-function renderSites(){const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>r.n).filter(Boolean)])];
-$('#sbr').innerHTML=['',...ss].map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua site'}<span>${v?ROWS.filter(r=>r.n==v).length:ROWS.length}</span></button>`).join('')}
+const DEF_SITES=['NDC Jababeka HCI','NDC Jababeka AHI & FBI','NDC Jababeka KLS','NDC Jababeka KLS HO','NDC Jababeka Inbound Trucking'];
+// Site AHI dan FBI digabung dalam satu menu: data bersite 'NDC Jababeka AHI' atau 'NDC Jababeka FBI' tampil di menu 'NDC Jababeka AHI & FBI'.
+const GRP={'ndc jababeka ahi':'NDC Jababeka AHI & FBI','ndc jababeka fbi':'NDC Jababeka AHI & FBI'};
+const grp=x=>GRP[String(x||'').trim().toLowerCase()]||x;
+const VR=()=>SITE?ROWS.filter(r=>grp(r.n)==SITE):ROWS;
+function renderSites(){const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
+$('#sbr').innerHTML=['',...ss].map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua site'}<span>${v?ROWS.filter(r=>grp(r.n)==v).length:ROWS.length}</span></button>`).join('')}
 function setSite(v){SITE=v;renderSites();renderT();renderD();renderK()}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
@@ -333,7 +336,7 @@ $('#sd').innerHTML=h;renderDL()}
 let DF={q:'',t:'',d:'',r:'',k:''};
 function dfset(k,v){DF[k]=v;renderDL()}
 function dfreset(){DF={q:'',t:'',d:'',r:'',k:''};renderD()}
-function dlist(){const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k!='wa'&&z.k!='w7')return;if(SITE&&r.n!=SITE)return;
+function dlist(){const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k!='wa'&&z.k!='w7')return;if(SITE&&grp(r.n)!=SITE)return;
 const kt=r.s[i]?SN(r.s[i],x):'';
 if(DF.q&&!(r.k+r.p).toLowerCase().includes(DF.q.toLowerCase()))return;
 if(DF.t&&r.t!=DF.t)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return;
