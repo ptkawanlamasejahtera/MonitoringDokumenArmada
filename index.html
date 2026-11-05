@@ -81,6 +81,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .nt{font-size:11px;font-style:italic;opacity:.85;max-width:200px;margin:2px auto 0;overflow:hidden;text-overflow:ellipsis}
 .ro #b2,.ro #b3,.ro .he,.ro button[onclick="openA()"]{display:none}
 .mc select:disabled,.mc input:disabled,.mc textarea:disabled{background:#f1f4f9;color:var(--tx);opacity:1}
+#ml{flex-wrap:wrap}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -244,6 +245,17 @@ h+='<div class="cd"><h2>Per tipe armada</h2><table>'+T.replace('{h}','Tipe')+[..
 h+='<div class="cd"><h2>Riwayat perpanjangan terbaru</h2><table><tr><th>Waktu</th><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th><th>Oleh</th></tr>'+
 H.slice().sort((a,b)=>b.w.localeCompare(a.w)).slice(0,30).map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td><b>${x.k}</b></td><td>${x.p}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${ok(x)?'ok':'ex'}">${x.st}</span></td><td>${x.u||'–'}</td></tr>`).join('')+'</table></div>';
 $('#sk').innerHTML=h}
+function printDoc(id){
+toast('Menyiapkan dokumen untuk dicetak…','info',0);
+api('action=file&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&id='+encodeURIComponent(id),x=>{
+if(x.error){toast('⚠️ '+x.error,'warn',8000);return}
+const bin=atob(x.b64),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);
+const url=URL.createObjectURL(new Blob([a],{type:x.mime})),fr=document.createElement('iframe');
+fr.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';
+if(x.mime.startsWith('image/'))fr.srcdoc='<html><body style="margin:0"><img src="'+url+'" style="max-width:100%" onload="window.focus();window.print()"></body></html>';
+else{fr.src=url;fr.onload=()=>setTimeout(()=>{try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.open(url)}},500)}
+document.body.appendChild(fr);$('#toast').style.display='none';
+setTimeout(()=>{fr.remove();URL.revokeObjectURL(url)},120000)})}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
@@ -265,7 +277,7 @@ function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
 $('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
 $('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i],r.d[i]);pp();$('#mn').value=NT(r,i);$('#mf').value='';
 const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
-$('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a>';
+$('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a><a class="bt g" href="#" '+(ok&&id?'onclick="printDoc(\''+id+'\');return false"':off)+'><svg class="i" viewBox="0 0 24 24" style="margin-right:6px"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>Print dokumen</a>';
 $('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
 const ro=ROLE!='admin';['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
