@@ -103,7 +103,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <div id="sbr" class="sbar"></div>
 <section id="st">
 <div class="bar"><label>Cari<span class="sr"><input id="q" placeholder="Kode / nopol…" oninput="renderT()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></span></label>
-<label id="fsl" style="display:none">Site<select id="fsi" onchange="renderT()"></select></label>
+<label id="fsl">Site<select id="fsi" onchange="renderT()"></select></label>
 <label>Tipe<select id="ft" onchange="renderT()"></select></label>
 <label>Dokumen<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select></label>
 <label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="pp">Dalam Proses Perpanjang</option><option value="na">Tanpa data</option></select></label>
@@ -122,7 +122,13 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 <label>Keterangan (opsional)<textarea id="mn" rows="2" maxlength="200" placeholder="Contoh: berkas di Samsat, estimasi selesai 10 Nov"></textarea></label></label>
 <label id="mfl">Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
-<div class="bt2"><button id="mcl" class="g" onclick="closeM()">Batal</button><button id="msv" onclick="save()">Save</button></div></div></div>
+<div class="bt2"><button id="mdel" class="g" style="margin-right:auto;color:#c0262d;border-color:#f3c0c0" onclick="openDel()">Hapus armada</button><button id="mcl" class="g" onclick="closeM()">Batal</button><button id="msv" onclick="save()">Save</button></div></div></div>
+<div id="mx" class="ov" hidden><div class="mc"><h3>Hapus armada</h3><p class="mu" id="dt"></p>
+<p style="margin:6px 0 0">Armada akan <b>dipindahkan ke sheet Arsip Armada</b> dan hilang dari daftar. File dokumen di Drive tidak dihapus.</p>
+<label>Alasan<select id="dr"><option>Diremajakan (diganti unit baru)</option><option>Tidak digunakan lagi</option><option>Dijual</option><option>Lainnya</option></select></label>
+<label>Catatan (opsional)<textarea id="dn" rows="2" maxlength="200"></textarea></label>
+<label>Ketik kode armada untuk konfirmasi<input id="dk" autocomplete="off"></label>
+<div class="bt2"><button class="g" onclick="closeDel()">Batal</button><button style="background:#c0262d" onclick="doDel()">Hapus</button></div></div></div>
 <div id="toast"></div>
 <div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
 <label>Site<select id="as"></select></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
@@ -158,7 +164,7 @@ s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIC
 setInterval(()=>{if(!document.hidden&&$('#mo').hidden&&Date.now()>=hold)load(true)},5000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
 function render(){
-const sv=$('#fsi').value,sites=[...new Set(ROWS.map(r=>r.n).filter(Boolean))].sort();
+const sv=$('#fsi').value,sites=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
 $('#fsi').innerHTML='<option value="">Semua site</option>'+sites.map(t=>`<option${t==sv?' selected':''}>${t}</option>`).join('');
 const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
 $('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
@@ -174,7 +180,7 @@ function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F
 function frows(){
 const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value,dOn=F.m||F.y||F.s||F.e;
 return ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
-if(SITE&&grp(r.n)!=SITE)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
+if(SITE&&grp(r.n)!=SITE)return false;if($('#fsi').value&&grp(r.n)!=$('#fsi').value)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
 if(!s&&!dOn)return true;
 return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i]):st(r.d[i]).k==s))&&(!dOn||inR(pd(r.d[i]))))})
 .sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
@@ -265,9 +271,19 @@ const DEF_SITES=['NDC Jababeka HCI','NDC Jababeka AHI & FBI','NDC Jababeka KLS',
 const GRP={'ndc jababeka ahi':'NDC Jababeka AHI & FBI','ndc jababeka fbi':'NDC Jababeka AHI & FBI'};
 const grp=x=>GRP[String(x||'').trim().toLowerCase()]||x;
 const VR=()=>SITE?ROWS.filter(r=>grp(r.n)==SITE):ROWS;
-function renderSites(){const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
+function renderSites(){$('#fsl').style.display=SITE?'none':'';const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
 $('#sbr').innerHTML=['',...ss].map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua site'}<span>${v?ROWS.filter(r=>grp(r.n)==v).length:ROWS.length}</span></button>`).join('')}
-function setSite(v){SITE=v;renderSites();renderT();renderD();renderK()}
+function setSite(v){SITE=v;$('#fsi').value='';DF.s='';renderSites();renderT();renderD();renderK()}
+function openDel(){const r=cur.r;$('#dt').textContent=r.k+' · '+r.p+' · '+r.n;$('#dr').selectedIndex=0;$('#dn').value='';$('#dk').value='';closeM();$('#mx').hidden=false;setTimeout(()=>$('#dk').focus(),50)}
+function closeDel(){$('#mx').hidden=true}
+function doDel(){if(ROLE!='admin')return;const r=cur.r;
+if($('#dk').value.trim().toUpperCase()!=String(r.k).toUpperCase())return alert('Ketik kode armada '+r.k+' untuk konfirmasi.');
+const pl={user:USR,pin:PIN,action:'delete',site:r.n,kode:r.k,reason:$('#dr').value,note:$('#dn').value.trim()};
+closeDel();toast('Menghapus…','info',0);hold=Date.now()+60000;
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
+if(x.error){toast('⚠️ Gagal menghapus: '+x.error,'warn',9000);return}
+const i=ROWS.indexOf(r);if(i>-1)ROWS.splice(i,1);sig='';render();toast('✅ Armada '+r.k+' dipindahkan ke Arsip Armada','ok',5000)})
+.catch(()=>setTimeout(()=>confirmSave(rows=>!rows.some(y=>y.k==r.k&&y.n==r.n),'Armada '+r.k+' dipindahkan ke Arsip Armada'),800))}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
@@ -291,7 +307,7 @@ $('#md').value=z.d?iso(z.d):'';$('#mp').value=SN(r.s[i],r.d[i]);pp();$('#mn').va
 const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
 $('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a><a class="bt g" href="#" '+(ok&&id?'onclick="printDoc(\''+id+'\');return false"':off)+'><svg class="i" viewBox="0 0 24 24" style="margin-right:6px"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>Print dokumen</a>';
 $('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
-const ro=ROLE!='admin';['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
+const ro=ROLE!='admin';['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mdel').style.display=ro?'none':'';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
 async function save(){if(ROLE!='admin')return;
@@ -326,6 +342,7 @@ h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('
 h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): <span id="dlc"></span> dokumen</h2>
 <div class="bar" style="margin-bottom:10px;padding:10px 12px">
 <label>Cari<input value="${DF.q}" placeholder="Kode / nopol…" oninput="dfset('q',this.value)"></label>
+<label style="${SITE?'display:none':''}">Site<select onchange="dfset('s',this.value)"><option value="">Semua site</option>${[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])].map(x=>`<option${x==DF.s?' selected':''}>${x}</option>`).join('')}</select></label>
 <label>Tipe<select onchange="dfset('t',this.value)"><option value="">Semua tipe</option>${ts.map(t=>`<option${t==DF.t?' selected':''}>${t}</option>`).join('')}</select></label>
 <label>Dokumen<select onchange="dfset('d',this.value)"><option value="">Semua dokumen</option>${DOCS.map((d,i)=>`<option value="${i}"${DF.d!==''&&DF.d==i?' selected':''}>${d}</option>`).join('')}</select></label>
 <label>Sisa waktu<select onchange="dfset('r',this.value)"><option value="">Semua</option><option value="w7"${DF.r=='w7'?' selected':''}>≤ 7 hari</option><option value="wa"${DF.r=='wa'?' selected':''}>8–30 hari</option></select></label>
@@ -333,13 +350,13 @@ h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): <span id="dlc"></span>
 <button class="g" onclick="dfreset()">Reset</button></div>
 <table><tr><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr><tbody id="dlb"></tbody></table></div>`;
 $('#sd').innerHTML=h;renderDL()}
-let DF={q:'',t:'',d:'',r:'',k:''};
+let DF={q:'',t:'',d:'',r:'',k:'',s:''};
 function dfset(k,v){DF[k]=v;renderDL()}
-function dfreset(){DF={q:'',t:'',d:'',r:'',k:''};renderD()}
+function dfreset(){DF={q:'',t:'',d:'',r:'',k:'',s:''};renderD()}
 function dlist(){const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k!='wa'&&z.k!='w7')return;if(SITE&&grp(r.n)!=SITE)return;
 const kt=r.s[i]?SN(r.s[i],x):'';
 if(DF.q&&!(r.k+r.p).toLowerCase().includes(DF.q.toLowerCase()))return;
-if(DF.t&&r.t!=DF.t)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return;
+if(DF.t&&r.t!=DF.t)return;if(DF.s&&grp(r.n)!=DF.s)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return;
 if(DF.k&&(DF.k=='-'?kt:kt!=DF.k))return;
 L.push({r,ri,i,n:z.n,d:z.d,k:z.k,kt})}));return L.sort((a,b)=>a.n-b.n)}
 function renderDL(){const L=dlist();$('#dlc').textContent=L.length;
