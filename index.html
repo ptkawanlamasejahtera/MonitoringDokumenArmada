@@ -88,6 +88,11 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 .mc.wide{max-width:880px}
 tr[data-p] td:not(.c){cursor:pointer}tr[data-p]:hover td:nth-child(2){text-decoration:underline}
 .mc td.ex{background:var(--ex);color:var(--exc)}.mc td.wa{background:#fff0b3;color:var(--wac)}.mc td.w7{background:#ffd54a;color:#4d3300}
+.nf{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:6px;border-radius:50%;background:#e5484d;color:#fff;font-size:11px;font-weight:700;vertical-align:1px}
+.nofoto{height:160px;border:2px dashed #e0a100;border-radius:10px;background:#fff8e1;color:#7a5b00;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;gap:4px;font-size:13px}
+.th{width:54px;height:34px;object-fit:cover;border-radius:5px;border:1px solid var(--bd);display:block;margin:0 auto}
+.nfp{display:inline-block;padding:1px 8px;border-radius:9px;background:#fde0e0;color:#c0262d;font-size:11px;font-weight:600}.nfp.up{background:#e5e7eb;color:#374151}
+td.fo{padding:2px 6px}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -110,6 +115,7 @@ tr[data-p] td:not(.c){cursor:pointer}tr[data-p]:hover td:nth-child(2){text-decor
 <label>Tipe<select id="ft" onchange="renderT()"></select></label>
 <label>Dokumen<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select></label>
 <label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="pp">Dalam Proses Perpanjang</option><option value="na">Tanpa data</option></select></label>
+<label>Foto armada<select id="ffo" onchange="renderT()"><option value="">Semua</option><option value="no">Belum ada foto</option><option value="yes">Sudah ada foto</option></select></label>
 <label>Bulan<select id="fm"><option value="">Semua</option></select></label>
 <label>Tahun<select id="fy"><option value="">Semua</option></select></label>
 <label>Start date<input type="date" id="f0"></label><label>End date<input type="date" id="fe"></label>
@@ -137,6 +143,7 @@ tr[data-p] td:not(.c){cursor:pointer}tr[data-p]:hover td:nth-child(2){text-decor
 <div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
 <label>Site<select id="as"></select></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
 <label>Masa berlaku dokumen (boleh dikosongkan, bisa diisi nanti)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><small class="mu">PAJAK</small><input type="date" id="ad0"></div><div><small class="mu">STNK</small><input type="date" id="ad1"></div><div><small class="mu">KIR</small><input type="date" id="ad2"></div><div><small class="mu">SIPA</small><input type="date" id="ad3"></div><div><small class="mu">IBM</small><input type="date" id="ad4"></div></div>
+<label>Foto armada tampak depan, nopol harus terlihat <b style="color:#c0262d">(wajib)</b><input type="file" id="af" accept="image/*" onchange="pva(this)"></label><div id="avp"></div>
 <div class="bt2"><button class="g" onclick="closeA()">Batal</button><button onclick="addA()">Simpan</button></div></div></div>
 <datalist id="dls"></datalist><datalist id="dlt"></datalist>
 <script>
@@ -179,12 +186,12 @@ $('#fy').innerHTML='<option value="">Semua</option>'+ys.map(y=>`<option${y==yv?'
 $('#dls').innerHTML=sites.map(x=>'<option value="'+x+'">').join('');$('#dlt').innerHTML=ts.map(x=>'<option value="'+x+'">').join('');
 renderSites();renderT();renderD();renderK()}
 function show(){F={m:$('#fm').value,y:$('#fy').value,s:$('#f0').value,e:$('#fe').value};renderT()}
-function reset(){['fm','fy','f0','fe'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
+function reset(){['fm','fy','f0','fe','ffo'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
 function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F.y&&d.getFullYear()!=F.y)return false;if(F.s&&d<new Date(F.s+'T00:00'))return false;if(F.e&&d>new Date(F.e+'T00:00'))return false;return true}
 function frows(){
 const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value,dOn=F.m||F.y||F.s||F.e;
 return ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
-if(SITE&&grp(r.n)!=SITE)return false;if($('#fsi').value&&grp(r.n)!=$('#fsi').value)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
+if(SITE&&grp(r.n)!=SITE)return false;if($('#fsi').value&&grp(r.n)!=$('#fsi').value)return false;if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;if($('#ffo').value=='no'&&r.f)return false;if($('#ffo').value=='yes'&&!r.f)return false;
 if(!s&&!dOn)return true;
 return(d===''?[0,1,2,3,4]:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i]):st(r.d[i]).k==s))&&(!dOn||inR(pd(r.d[i]))))})
 .sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
@@ -192,12 +199,12 @@ function srt(k){SO=SO.k===k?{k,d:-SO.d}:{k,d:1};renderT()}
 const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span><i class="rz" onmousedown="rz(event)" onclick="event.stopPropagation()" ondblclick="rzReset()"></i></th>';
 function renderT(){
 const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Ikon scan dokumen biru berarti file sudah diunggah (klik ikon untuk melihat file). Klik baris armada untuk melihat profil. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
-$('#tb').innerHTML='<colgroup>'+'<col>'.repeat(9)+'</colgroup><tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
-rows.map(([r,ri],n)=>`<tr data-p="${ri}"><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
+$('#tb').innerHTML='<colgroup>'+'<col>'.repeat(10)+'</colgroup><tr>'+TH('Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+TH('Foto','f','d')+DOCS.map((x,i)=>TH(x,i,'d')).join('')+'</tr>'+
+rows.map(([r,ri],n)=>`<tr data-p="${ri}"><td>${r.n||''}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td><td class="fo">${THUMB(r)}</td>`+r.d.map((x,i)=>{
 const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${DOCB(r.l[i])}${LAB(r.s[i],x)}${NTB(r,i)}</td>`}).join('')+'</tr>').join('');applyW()}
 $('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c){openM(+c.dataset.r,+c.dataset.i);return}const t=e.target.closest('tr[data-p]');if(t&&e.target.closest('td'))openProf(+t.dataset.p)};
 let W=null;try{W=JSON.parse(localStorage.getItem('cw')||'null')}catch(e){}
-function applyW(){const t=$('#tb');if(!W||W.length!=9){W=null;t.style.tableLayout='';t.style.width='';return}
+function applyW(){const t=$('#tb');if(!W||W.length!=10){W=null;t.style.tableLayout='';t.style.width='';return}
 t.style.tableLayout='fixed';t.style.width=W.reduce((a,b)=>a+b,0)+'px';t.querySelectorAll('col').forEach((c,i)=>c.style.width=W[i]+'px')}
 function rz(e){e.preventDefault();e.stopPropagation();const th=e.target.parentNode,ch=[...th.parentNode.children],idx=ch.indexOf(th);
 if(!W)W=ch.map(x=>x.offsetWidth);const x0=e.clientX,w0=W[idx];applyW();
@@ -205,17 +212,18 @@ const mv=ev=>{W[idx]=Math.max(40,w0+ev.clientX-x0);applyW()};
 const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);try{localStorage.setItem('cw',JSON.stringify(W))}catch(e){}};
 document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up)}
 function rzReset(){W=null;try{localStorage.removeItem('cw')}catch(e){}renderT()}
-function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];$('#as').innerHTML=ss.map(x=>'<option>'+x+'</option>').join('');$('#as').value=SITE||ss[0];DOCS.forEach((d,i)=>$('#ad'+i).value='');$('#ma').hidden=false}
+function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];$('#as').innerHTML=ss.map(x=>'<option>'+x+'</option>').join('');$('#as').value=SITE||ss[0];DOCS.forEach((d,i)=>$('#ad'+i).value='');$('#af').value='';$('#avp').innerHTML='';$('#ma').hidden=false}
 function closeA(){$('#ma').hidden=true}
 const fd=v=>v?(+v.slice(8)+' '+MN[+v.slice(5,7)-1]+' '+v.slice(0,4)):'';
 async function addA(){if(ROLE!='admin')return;
 const site=$('#as').value.trim(),k=$('#ak').value.trim().toUpperCase(),p=$('#ap').value.trim().toUpperCase().replace(/\s+/g,''),t=$('#at').value.trim().toUpperCase();
 if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
 if(ROWS.some(r=>r.k.toUpperCase()==k&&grp(r.n)==grp(site)))return alert('Kode armada '+k+' sudah ada di site '+site+'.');
+const pf0=$('#af').files[0];if(!pf0)return alert('Foto armada tampak depan wajib diunggah (nopol harus terlihat).');if(pf0.size>10*1024*1024)return alert('Foto maksimal 10 MB.');
 const d=DOCS.map((_,i)=>fd($('#ad'+i).value));hold=Date.now()+10000;
-const pl={user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d};
-ROWS.push({n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','','']});closeA();render();toast('Menyimpan…','info',0);hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(r=>r.json()).then(x=>{hold=0;if(x.error){toast('⚠️ Gagal menambah: '+x.error,'warn',9000);sig='';load(true);return}sig='';toast('✅ Berhasil ditambahkan: '+k,'ok',4000)})
+toast('Menyimpan…','info',0);const pf=await cmp(pf0);const pl={user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d,file:{name:pf.name,mime:pf.type||'image/jpeg',b64:await b64(pf)}};
+const nr={n:site,k,p,t,d:d.map(x=>x||'-'),l:['','','','',''],s:['','','','',''],c:['','','','',''],f:'#'};ROWS.push(nr);closeA();render();hold=Date.now()+60000;
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(r=>r.json()).then(x=>{hold=0;if(x.error){const i=ROWS.indexOf(nr);if(i>-1)ROWS.splice(i,1);render();toast('⚠️ Gagal menambah: '+x.error,'warn',9000);sig='';load(true);return}if(x.link)nr.f=x.link;sig='';render();toast('✅ Berhasil ditambahkan: '+k,'ok',4000)})
 .catch(()=>setTimeout(()=>confirmSave(rows=>rows.some(x=>String(x.k).toUpperCase()==k&&x.n==site),'Berhasil ditambahkan: '+k),800))}
 let tt;function toast(m,t,ms){const e=$('#toast');e.className='t-'+(t||'info');e.textContent=m;e.style.display='block';clearTimeout(tt);if(ms!==0)tt=setTimeout(()=>e.style.display='none',ms||4000)}
 function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb(null)};
@@ -292,19 +300,40 @@ function closeProf(){$('#mpf').hidden=true}
 function profDoc(ri,i){closeProf();openM(ri,i)}
 function profDel(ri){cur={r:ROWS[ri],i:0};closeProf();openDel()}
 function openProf(ri){
-const r=ROWS[ri];if(!r)return;const c={ex:0,w7:0,wa:0,ok:0,na:0},dd=x=>{const d=pd(x);return d?fmt(d):x};
+const r=ROWS[ri];if(!r)return;PRI=ri;const c={ex:0,w7:0,wa:0,ok:0,na:0},dd=x=>{const d=pd(x);return d?fmt(d):x};
 const rows=DOCS.map((d,i)=>{const x=r.d[i],z=st(x),u=r.l[i],ok=u&&u!='#';c[z.k]++;
 return`<tr><td><b>${d}</b></td><td class="${z.k=='ok'||z.k=='na'?'':z.k}">${z.d?fmt(z.d):'–'}</td><td>${z.d?(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):'–'}</td><td>${LAB(r.s[i],x)||'–'}</td><td style="white-space:normal">${NT(r,i)?EH(NT(r,i)):'–'}</td><td>${ok?'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Buka dokumen">'+DI+'</a>':'<span class="mu">Belum ada</span>'}</td><td><button class="g" onclick="profDoc(${ri},${i})">${ROLE=='admin'?'Ubah':'Buka'}</button></td></tr>`}).join('');
 const H=HIST.filter(h=>h.k==r.k&&h.n==r.n).sort((a,b)=>b.w.localeCompare(a.w));
-$('#pfc').innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px"><svg viewBox="0 0 64 40" style="width:58px;height:37px;fill:var(--navy);flex:none"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><div><h3 style="font-size:22px">${EH(r.k)}</h3><div class="mu">${EH(r.p)} · ${EH(r.t)} · ${EH(r.n)}</div></div></div>
+$('#pfc').innerHTML=`<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px"><div style="width:280px;max-width:100%;flex:none">${PHOTO(r)}</div><div style="flex:1;min-width:220px"><h3 style="font-size:24px">${EH(r.k)}</h3><div class="mu" style="margin-bottom:10px">${EH(r.p)} · ${EH(r.t)} · ${EH(r.n)}</div>${ROLE=='admin'?'<button class="g" onclick="document.getElementById(\'pfu\').click()">'+(r.f?'Ganti foto armada':'Upload foto armada')+'</button><input type="file" id="pfu" hidden accept="image/*" onchange="upPhoto(this)">':''}</div></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="n ex">${c.ex} Expired</span><span class="n w7">${c.w7} ≤ 7 hari</span><span class="n wa">${c.wa} 8–30 hari</span><span class="n ok">${c.ok} Berlaku</span><span class="n na">${c.na} Belum ada data</span></div>
 <div style="overflow:auto"><table><tr><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Status</th><th>Catatan</th><th>File</th><th></th></tr>${rows}</table></div>
 <h3 style="font-size:14px;margin:16px 0 6px">Riwayat perpanjangan</h3>`+(H.length?`<div style="overflow:auto;max-height:200px"><table><tr><th>Waktu</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th></tr>${H.map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${x.st=='Tepat Waktu'?'ok':'ex'}">${x.st}</span></td></tr>`).join('')}</table></div>`:'<p class="mu">Belum ada riwayat perpanjangan.</p>')+
 `<div class="bt2">${ROLE=='admin'?'<button class="g" style="margin-right:auto;color:#c0262d;border-color:#f3c0c0" onclick="profDel('+ri+')">Hapus armada</button>':''}<button onclick="closeProf()">Tutup</button></div>`;
 $('#mpf').hidden=false}
+let PRI=-1;
+const THUMB=r=>{const u=r.f,id=u&&u!='#'&&gid(u);
+if(id)return'<img class="th" loading="lazy" src="https://drive.google.com/thumbnail?id='+id+'&sz=w160" alt="Foto '+EH(r.k)+'" onerror="this.outerHTML=\'<span class=nfp>Foto error</span>\'">';
+return u=='#'?'<span class="nfp up">Mengunggah…</span>':'<span class="nfp">Belum ada foto</span>'};
+const PHOTO=r=>{const u=r.f,id=u&&u!='#'&&gid(u);
+if(id)return'<a href="'+u+'" target="_blank" rel="noopener"><img src="https://drive.google.com/thumbnail?id='+id+'&sz=w800" alt="Foto armada '+EH(r.k)+'" style="width:100%;border-radius:10px;border:1px solid var(--bd);display:block" onerror="this.outerHTML=\'<p class=mu>Pratinjau foto tidak tersedia.</p>\'"></a>';
+if(u=='#')return'<div class="nofoto">Mengunggah foto…</div>';
+return'<div class="nofoto"><b>Belum ada foto armada</b><span>Wajib: foto tampak depan, nopol terlihat jelas.</span></div>'};
+async function upPhoto(inp){const f0=inp.files[0];if(!f0||ROLE!='admin')return;
+if(f0.size>10*1024*1024)return alert('File maksimal 10 MB.');
+const r=ROWS[PRI],old=r.f;toast('Mengunggah foto…','info',0);hold=Date.now()+60000;
+const f=await cmp(f0),pl={user:USR,pin:PIN,action:'photo',site:r.n,kode:r.k,file:{name:f.name,mime:f.type||'image/jpeg',b64:await b64(f)}};
+r.f='#';openProf(PRI);
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
+if(x.error){r.f=old;toast('⚠️ Gagal menyimpan foto: '+x.error,'warn',9000);if(!$('#mpf').hidden)openProf(ROWS.indexOf(r));return}
+r.f=x.link;sig='';render();toast('✅ Foto armada '+r.k+' tersimpan','ok',4000);if(!$('#mpf').hidden)openProf(ROWS.indexOf(r))})
+.catch(()=>setTimeout(()=>confirmSave(rows=>{const y=rows.find(z=>z.k==r.k&&z.n==r.n);return y&&y.f&&y.f!=old},'Foto armada '+r.k+' tersimpan'),800))}
+function goFoto(){$('#ffo').value='no';tab('t');renderT()}
+function pva(i){const f=i.files[0],v=$('#avp');if(!f){v.innerHTML='';return}
+if(f.size>10*1024*1024){alert('File maksimal 10 MB.');i.value='';v.innerHTML='';return}
+v.innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto armada" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid var(--bd);margin-top:6px">'}
 function exportCsv(){
-const h=['Site','Kode','No Polisi','Tipe'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
-const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
+const h=['Site','Kode','No Polisi','Tipe','Foto Armada'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
+const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t,r.f?'Ada':'Belum ada'];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
 const csv='\ufeff'+[h,...rows].map(a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
 const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));el.download='monitoring-dokumen-armada.csv';el.click()}
 const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada Dokumen':'b'};
@@ -353,7 +382,7 @@ function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class=
 function renderD(){
 const all=cnt(VR(),[0,1,2,3,4]),pr=VR().reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','pp'];
 const H='<tr><th>{h}</th><th>Expired</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Berlaku</th><th>Dalam Proses Perpanjang</th><th>Proporsi</th></tr>';
-let h=`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Berlaku</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
+const nf=VR().filter(r=>!r.f).length;let h=(nf?`<div class="cd" style="background:#fff3c4;border-color:#f2d36b;display:flex;justify-content:space-between;align-items:center;gap:10px"><span><b>${nf}</b> armada belum memiliki foto armada tampak depan (wajib).</span><button onclick="goFoto()">Lihat daftar</button></div>`:'')+`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Berlaku</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
 h+='<div class="cd"><h2>Per dokumen ('+VR().length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(VR(),[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
 const ts=[...new Set(VR().map(r=>r.t))].sort();
 h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=VR().filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${K.map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div></div>';
