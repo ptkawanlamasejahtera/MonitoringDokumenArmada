@@ -79,7 +79,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 #toast{top:auto;bottom:26px}
 .mc textarea{width:100%;padding:9px 10px;border:1px solid #d3deef;border-radius:8px;background:#fff;color:var(--tx);font:inherit;resize:vertical}
 .nt{font-size:11px;font-style:italic;opacity:.85;max-width:200px;margin:2px auto 0;overflow:hidden;text-overflow:ellipsis}
-.ro #b2,.ro #b3,.ro .he,.ro button[onclick="openA()"]{display:none}
+.ro #b2,.ro #b3,.ro #b4,.ro .he,.ro button[onclick="openA()"]{display:none}
 .mc select:disabled,.mc input:disabled,.mc textarea:disabled{background:#f1f4f9;color:var(--tx);opacity:1}
 #ml{flex-wrap:wrap}
 .sbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
@@ -93,6 +93,7 @@ tr[data-p] td:not(.c){cursor:pointer}tr[data-p]:hover td:nth-child(2){text-decor
 .th{width:54px;height:34px;object-fit:cover;border-radius:5px;border:1px solid var(--bd);display:block;margin:0 auto}
 .nfp{display:inline-block;padding:1px 8px;border-radius:9px;background:#fde0e0;color:#c0262d;font-size:11px;font-weight:600}.nfp.up{background:#e5e7eb;color:#374151}
 td.fo{padding:2px 6px}
+.ck{display:block;margin:4px 0!important;font-weight:400!important}.ck input{width:auto!important;margin-right:6px}
 </style></head><body>
 <div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
 <label>Username<input id="lu" autocomplete="username"></label>
@@ -104,7 +105,7 @@ td.fo{padding:2px 6px}
 <div id="fs2" hidden><label>Kode reset (6 digit)<input id="fc" inputmode="numeric" maxlength="6"></label><label>Password baru (min. 6 karakter)<input id="fn" type="password" autocomplete="new-password"></label><label>Ulangi password baru<input id="fn2" type="password" autocomplete="new-password"></label><button onclick="fpReset()" style="margin-top:12px">Simpan password baru</button></div>
 <div id="fm2" style="margin-top:8px;min-height:18px"></div></div></div></div>
 <header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
-<button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button><button id="b3" class="tb" onclick="tab('k')"><svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>KPI Perpanjangan</button>
+<button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button><button id="b3" class="tb" onclick="tab('k')"><svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>KPI Perpanjangan</button><button id="b4" class="tb" onclick="tab('u')"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 010 7M18 14.8c2.2.6 4 2.2 4 5.2"/></svg>Master User</button>
 <span id="hb"><button class="hq" onclick="openA()"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Armada</button><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
 <span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
 <main>
@@ -124,6 +125,7 @@ td.fo{padding:2px 6px}
 <div class="w"><table id="tb"></table></div></section>
 <section id="sd" hidden></section>
 <section id="sk" hidden></section>
+<section id="su" hidden></section>
 </main>
 <div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
 <label>Tanggal masa berlaku<input type="date" id="md"></label>
@@ -139,6 +141,12 @@ td.fo{padding:2px 6px}
 <label>Ketik kode armada untuk konfirmasi<input id="dk" autocomplete="off"></label>
 <div class="bt2"><button class="g" onclick="closeDel()">Batal</button><button style="background:#c0262d" onclick="doDel()">Hapus</button></div></div></div>
 <div id="mpf" class="ov" hidden><div class="mc wide" id="pfc"></div></div>
+<div id="mus" class="ov" hidden><div class="mc"><h3>User hanya-lihat</h3><p class="mu">User ini hanya bisa melihat dan mendownload dokumen pada site yang dipilih.</p>
+<label>Username<input id="uu" autocomplete="off"></label>
+<label>Password<input id="up2" type="password" autocomplete="new-password" placeholder="Kosongkan jika tidak diubah"></label>
+<label>Site yang boleh dilihat</label><div id="usl"></div>
+<label class="ck" style="margin-top:10px"><input type="checkbox" id="ua"> Akun aktif</label>
+<div class="bt2"><button class="g" onclick="closeU()">Batal</button><button onclick="saveU()">Simpan</button></div></div></div>
 <div id="toast"></div>
 <div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
 <label>Site<select id="as"></select></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
@@ -159,9 +167,9 @@ m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
 function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-function tab(x){if(ROLE&&ROLE!='admin')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';['b1','b2','b3'].forEach((b,i)=>$('#'+b).className='tb'+('tdk'[i]==x?' act':''));$('#hb').hidden=x!='t'}
+function tab(x){if(ROLE&&ROLE!='admin')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';$('#su').hidden=x!='u';['b1','b2','b3','b4'].forEach((b,i)=>$('#'+b).className='tb'+('tdku'[i]==x?' act':''));$('#hb').hidden=x!='t'}
 function doLogin(){USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
-function logout(k){SITE='';ROLE='';document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
+function logout(k){SITE='';ROLE='';ASITES=['*'];USERS=[];document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
 if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
@@ -169,13 +177,13 @@ window[cb]=r=>{busy=false;s.remove();delete window[cb];
 if(r.error){logout(1);$('#le').textContent=r.error;return}
 ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');if(ROLE!='admin')tab('t');$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID')+(r.ver?' · script '+r.ver:' · script lama');
 if(q&&Date.now()<hold)return;
-const g=JSON.stringify([r.rows,r.hist]);if(g==sig)return;sig=g;ROWS=r.rows;HIST=r.hist||[];render()};
+ASITES=r.sites||['*'];USERS=r.users||[];const g=JSON.stringify([r.rows,r.hist,r.users,r.sites]);if(g==sig)return;sig=g;ROWS=r.rows;HIST=r.hist||[];render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
 s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
 setInterval(()=>{if(!document.hidden&&$('#mo').hidden&&Date.now()>=hold)load(true)},5000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
 function render(){
-const sv=$('#fsi').value,sites=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
+const sv=$('#fsi').value,sites=SS();
 $('#fsi').innerHTML='<option value="">Semua site</option>'+sites.map(t=>`<option${t==sv?' selected':''}>${t}</option>`).join('');
 const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
 $('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
@@ -184,7 +192,7 @@ if($('#fm').options.length<2)['Januari','Februari','Maret','April','Mei','Juni',
 const ys=[...new Set(ROWS.flatMap(r=>r.d.map(x=>{const d=pd(x);return d&&d.getFullYear()})).filter(Boolean))].sort(),yv=$('#fy').value;
 $('#fy').innerHTML='<option value="">Semua</option>'+ys.map(y=>`<option${y==yv?' selected':''}>${y}</option>`).join('');
 $('#dls').innerHTML=sites.map(x=>'<option value="'+x+'">').join('');$('#dlt').innerHTML=ts.map(x=>'<option value="'+x+'">').join('');
-renderSites();renderT();renderD();renderK()}
+renderSites();renderT();renderD();renderK();renderU()}
 function show(){F={m:$('#fm').value,y:$('#fy').value,s:$('#f0').value,e:$('#fe').value};renderT()}
 function reset(){['fm','fy','f0','fe','ffo'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
 function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F.y&&d.getFullYear()!=F.y)return false;if(F.s&&d<new Date(F.s+'T00:00'))return false;if(F.e&&d>new Date(F.e+'T00:00'))return false;return true}
@@ -283,9 +291,12 @@ const DEF_SITES=['NDC Jababeka HCI','NDC Jababeka AHI & FBI','NDC Jababeka KLS',
 const GRP={'ndc jababeka ahi':'NDC Jababeka AHI & FBI','ndc jababeka fbi':'NDC Jababeka AHI & FBI'};
 const grp=x=>GRP[String(x||'').trim().toLowerCase()]||x;
 const VR=()=>SITE?ROWS.filter(r=>grp(r.n)==SITE):ROWS;
-function renderSites(){$('#fsl').style.display=SITE?'none':'';const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])];
-$('#sbr').innerHTML=['',...ss].map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua site'}<span>${v?ROWS.filter(r=>grp(r.n)==v).length:ROWS.length}</span></button>`).join('')}
-function setSite(v){SITE=v;$('#fsi').value='';DF.s='';renderSites();renderT();renderD();renderK()}
+let ASITES=['*'],USERS=[],EU=null;
+const SS=()=>ASITES.includes('*')?[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])]:ASITES;
+function renderSites(){const ss=SS(),all=ASITES.includes('*')||ss.length>1;if(!all&&ss.length&&SITE!=ss[0])SITE=ss[0];
+$('#fsl').style.display=SITE?'none':'';
+$('#sbr').innerHTML=(all?['',...ss]:ss).map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua site'}<span>${v?ROWS.filter(r=>grp(r.n)==v).length:ROWS.length}</span></button>`).join('')}
+function setSite(v){SITE=v;$('#fsi').value='';DF.s='';renderSites();renderT();renderD();renderK();renderU()}
 function openDel(){const r=cur.r;$('#dt').textContent=r.k+' · '+r.p+' · '+r.n;$('#dr').selectedIndex=0;$('#dn').value='';$('#dk').value='';closeM();$('#mx').hidden=false;setTimeout(()=>$('#dk').focus(),50)}
 function closeDel(){$('#mx').hidden=true}
 function doDel(){if(ROLE!='admin')return;const r=cur.r;
@@ -302,7 +313,7 @@ function profDel(ri){cur={r:ROWS[ri],i:0};closeProf();openDel()}
 function openProf(ri){
 const r=ROWS[ri];if(!r)return;PRI=ri;const c={ex:0,w7:0,wa:0,ok:0,na:0},dd=x=>{const d=pd(x);return d?fmt(d):x};
 const rows=DOCS.map((d,i)=>{const x=r.d[i],z=st(x),u=r.l[i],ok=u&&u!='#';c[z.k]++;
-return`<tr><td><b>${d}</b></td><td class="${z.k=='ok'||z.k=='na'?'':z.k}">${z.d?fmt(z.d):'–'}</td><td>${z.d?(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):'–'}</td><td>${LAB(r.s[i],x)||'–'}</td><td style="white-space:normal">${NT(r,i)?EH(NT(r,i)):'–'}</td><td>${ok?'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Buka dokumen">'+DI+'</a>':'<span class="mu">Belum ada</span>'}</td><td><button class="g" onclick="profDoc(${ri},${i})">${ROLE=='admin'?'Ubah':'Buka'}</button></td></tr>`}).join('');
+return`<tr><td><b>${d}</b></td><td class="${z.k=='ok'||z.k=='na'?'':z.k}">${z.d?fmt(z.d):'–'}</td><td>${z.d?(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):'–'}</td><td>${STP(r.s[i],x)}</td><td style="white-space:normal">${NT(r,i)?EH(NT(r,i)):'–'}</td><td>${ok?'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Buka dokumen">'+DI+'</a>':'<span class="mu">Belum ada</span>'}</td><td><button class="g" onclick="profDoc(${ri},${i})">${ROLE=='admin'?'Ubah':'Buka'}</button></td></tr>`}).join('');
 const H=HIST.filter(h=>h.k==r.k&&h.n==r.n).sort((a,b)=>b.w.localeCompare(a.w));
 $('#pfc').innerHTML=`<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px"><div style="width:280px;max-width:100%;flex:none">${PHOTO(r)}</div><div style="flex:1;min-width:220px"><h3 style="font-size:24px">${EH(r.k)}</h3><div class="mu" style="margin-bottom:10px">${EH(r.p)} · ${EH(r.t)} · ${EH(r.n)}</div>${ROLE=='admin'?'<button class="g" onclick="document.getElementById(\'pfu\').click()">'+(r.f?'Ganti foto armada':'Upload foto armada')+'</button><input type="file" id="pfu" hidden accept="image/*" onchange="upPhoto(this)">':''}</div></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="n ex">${c.ex} Expired</span><span class="n w7">${c.w7} ≤ 7 hari</span><span class="n wa">${c.wa} 8–30 hari</span><span class="n ok">${c.ok} Berlaku</span><span class="n na">${c.na} Belum ada data</span></div>
@@ -331,6 +342,25 @@ function goFoto(){$('#ffo').value='no';tab('t');renderT()}
 function pva(i){const f=i.files[0],v=$('#avp');if(!f){v.innerHTML='';return}
 if(f.size>10*1024*1024){alert('File maksimal 10 MB.');i.value='';v.innerHTML='';return}
 v.innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto armada" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid var(--bd);margin-top:6px">'}
+function renderU(){const e=$('#su');if(ROLE!='admin'){e.innerHTML='';return}
+e.innerHTML=`<div class="cd"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;flex-wrap:wrap"><h2 style="margin:0">Master User (hanya lihat per site)</h2><button onclick="openU()">+ Tambah user</button></div>
+<p class="mu" style="margin:0 0 10px">Akun di sini hanya bisa melihat dan mendownload dokumen pada site yang diizinkan. Akun admin tidak ditampilkan di daftar ini.</p>
+<table><tr><th>Username</th><th>Site yang boleh dilihat</th><th>Status</th><th>Aksi</th></tr>${USERS.map((u,i)=>`<tr><td><b>${EH(u.u)}</b></td><td style="white-space:normal">${u.s.includes('*')?'Semua site':u.s.map(EH).join(', ')}</td><td><span class="n ${u.a?'ok':'ex'}">${u.a?'Aktif':'Nonaktif'}</span></td><td><button class="g" onclick="openU(${i})">Ubah</button> <button class="g" style="color:#c0262d" onclick="delU(${i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="4" class="mu">Belum ada user.</td></tr>'}</table></div>`}
+function openU(i){EU=i==null?null:USERS[i];$('#uu').value=EU?EU.u:'';$('#uu').disabled=!!EU;$('#up2').value='';$('#ua').checked=EU?EU.a:true;
+const ss=[...new Set([...DEF_SITES,...ROWS.map(r=>grp(r.n)).filter(Boolean)])],sel=EU?EU.s:[];
+$('#usl').innerHTML='<label class="ck"><input type="checkbox" value="*"'+(sel.includes('*')?' checked':'')+'> Semua site</label>'+ss.map(x=>'<label class="ck"><input type="checkbox" value="'+EH(x)+'"'+(sel.includes(x)?' checked':'')+'> '+EH(x)+'</label>').join('');
+$('#mus').hidden=false}
+function closeU(){$('#mus').hidden=true}
+function userPost(pl,okm){toast('Menyimpan…','info',0);hold=Date.now()+30000;
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(Object.assign({user:USR,pin:PIN},pl))}).then(x=>x.json()).then(x=>{hold=0;
+if(x.error){toast('⚠️ '+x.error,'warn',8000);return}USERS=x.users||[];sig='';renderU();toast('✅ '+okm,'ok',4000)})
+.catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Periksa lagi daftar user.','warn',8000);sig='';load(true)})}
+function saveU(){if(ROLE!='admin')return;const u=$('#uu').value.trim(),pw=$('#up2').value,s=[...document.querySelectorAll('#usl input:checked')].map(x=>x.value);
+if(!/^[A-Za-z0-9_.-]{3,30}$/.test(u))return alert('Username 3-30 karakter: huruf, angka, titik, garis bawah, atau strip.');
+if((!EU||pw)&&pw.length<6)return alert('Password minimal 6 karakter.');
+if(!s.length)return alert('Pilih minimal satu site.');
+closeU();userPost({action:'user_save',uname:u,password:pw,sites:s.includes('*')?['*']:s,aktif:$('#ua').checked,isnew:!EU},'User '+u+' tersimpan')}
+function delU(i){if(ROLE!='admin')return;const u=USERS[i];if(!confirm('Hapus user '+u.u+'?'))return;userPost({action:'user_delete',uname:u.u},'User '+u.u+' dihapus')}
 function exportCsv(){
 const h=['Site','Kode','No Polisi','Tipe','Foto Armada'];DOCS.forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));
 const rows=frows().map(([r])=>{const a=[r.n,r.k,r.p,r.t,r.f?'Ada':'Belum ada'];r.d.forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});return a});
@@ -343,6 +373,7 @@ const DOCB=u=>u?'<span class="dv"></span>'+(u=='#'?'<span class="di up" title="M
 const NT=(r,i)=>(r.c&&r.c[i])||'';
 const EH=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const NTB=(r,i)=>NT(r,i)?'<div class="nt" title="'+EH(NT(r,i))+'">'+EH(NT(r,i))+'</div>':'';
+const STP=(sv,d)=>{const v=SN(sv,d);return'<span class="pl '+PC[v]+'" style="margin:0">'+v+'</span>'};
 const LAB=(x,d)=>{if(!x)return'';const v=SN(x,d);return v=='Berlaku'?'':'<div class="kt '+PC[v]+'"><svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h7M9 17h5"/></svg>'+v+'</div>'};
 function pp(){const v=$('#mp').value;$('#mpv').innerHTML='<span class="pl '+PC[v]+'">'+v+'</span>'}
 const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
