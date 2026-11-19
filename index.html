@@ -539,7 +539,7 @@ function sendAj(){if(ROLE!='admin')return;const items=selItems();if(!items.lengt
 const pl={user:USR,pin:PIN,action:'ajukan',items:items.map(x=>({site:x.r.n,kode:x.r.k,doc:x.i})),note:$('#ajn').value.trim()};
 closeAj();toast('Mengirim pengajuan…','info',0);hold=Date.now()+60000;
 fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ '+x.error,'warn',9000);sig='';load(true);return}
+if(x.error){toast('⚠️ '+(/MailApp|permission|send_mail/i.test(x.error)?'Izin kirim email belum diberikan. Admin perlu menjalankan fungsi izinkanEmail di Apps Script lalu deploy versi baru. Status dokumen belum berubah.':x.error),'warn',12000);sig='';load(true);return}
 items.forEach(it=>{it.r.s[it.i]='Dalam Proses Perpanjang'});SEL.clear();sig='';render();toast('✅ Pengajuan '+items.length+' dokumen terkirim ke email','ok',6000)})
 .catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Cek sheet Pengajuan Perpanjangan sebelum mengirim ulang.','warn',9000);sig='';load(true)})}
 try{sessionStorage.clear()}catch(e){}
