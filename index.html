@@ -1,547 +1,114 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Monitoring Dokumen Armada</title>
+<title>Dokumen Armada NDC Jababeka – HCI</title>
 <style>
-:root{--bg:#e8eff9;--cd:#fff;--tx:#17263f;--mu:#5d6b82;--bd:#e1e8f3;--pri:#1655c9;--navy:#14336b;--ex:#fde0e0;--exc:#c0262d;--wa:#fff3c4;--wac:#7a5b00;--ok:#dcf5e4;--okc:#17692f;--na:#eef1f6}
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:14px 'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx)}
-.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:6px}
-header{padding:10px 24px;display:flex;gap:14px;align-items:center;color:#fff;min-height:64px;background:linear-gradient(90deg,#0b3a8c 0%,#0f48ad 40%,rgba(21,88,200,.55) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='64'%3E%3Cg fill='white' fill-opacity='.16'%3E%3Cpath d='M4 52V24h42v28zM48 52V34l9-10h16l6 10v18z'/%3E%3C/g%3E%3C/svg%3E") right/auto 100% repeat-x,#1558c8}
-header h1{font-size:21px;margin:0;flex:1;font-weight:700;display:flex;align-items:center;gap:14px}.lg{width:44px;height:28px;fill:#fff}
-button,a.bt{border:0;background:var(--pri);color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font:inherit;font-weight:600;text-decoration:none;display:inline-flex;align-items:center}
-button.g,a.bt.g{background:#fff;color:var(--tx);border:1px solid var(--bd)}
-header .tb{background:transparent;color:#fff;font-weight:500}header .tb.act{background:#fff;color:#0f3f9f;font-weight:600}header .out{border:1px solid #ffffff99}
-#up{font-size:13px;display:flex;align-items:center;border-left:1px solid #ffffff55;padding-left:14px}
-main{padding:14px 24px;width:100%}.mu{color:var(--mu)}
-.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;padding:14px 16px;background:#d9e7fb;border-radius:12px;margin-bottom:10px}
-.bar label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:#26385a}
-input,select{padding:9px 10px;border:1px solid #cfdaec;border-radius:8px;background:#fff;color:var(--tx);font:inherit;min-width:0}
-.sr{position:relative;display:block}.sr input{padding-right:34px;width:190px}.sr svg{position:absolute;right:10px;top:10px;width:16px;height:16px;fill:none;stroke:#8190a8;stroke-width:2}
-.bar button{height:38px}#bs{background:#0d3a8f}
-.inf{background:#e4eefc;border:1px solid #c9dcf7;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px;color:#26385a}.inf::before{content:"ⓘ";color:var(--pri);margin-right:8px;font-weight:700}
-.w{overflow:auto;background:var(--cd);border:1px solid var(--bd);border-radius:12px;max-height:calc(100vh - 270px);box-shadow:0 1px 4px #1a2b4a14}
-table{border-collapse:collapse;width:100%;font-size:12.5px}th,td{padding:4px 8px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
-th{position:sticky;top:0;background:var(--navy);color:#fff;z-index:1;cursor:pointer;user-select:none;font-weight:600}th.nc{cursor:default}th.d,td.c{text-align:center}th .so{opacity:.55;font-size:10px;margin-left:6px}
-tbody tr:nth-child(even) td{background:#f8fafd}tbody tr:hover td{background:#eef4ff}
-td.c{cursor:pointer}td.c:hover{outline:2px solid var(--pri);outline-offset:-2px}
-.pl{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:1px}.pl.o{background:#dcf5e4;color:#17692f}.pl.e{background:#fde0e0;color:#c0262d}.pl.p{background:#ffe5cf;color:#c2500a}.pl.b{background:#eef0f3;color:#444}
-td.c.ex,.ex{background:var(--ex);color:var(--exc)}td.c.wa,.wa{background:var(--wa);color:var(--wac)}td.c.w7,.w7{background:#ffd54a;color:#4d3300;font-weight:600}
-tbody td.c.ok,tbody td.c.na{color:inherit}.ok{background:var(--ok);color:var(--okc)}.na{background:var(--na);color:var(--mu)}
-.k{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
-.k div,.cd{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px;box-shadow:0 1px 4px #1a2b4a14}.k b{display:block;font-size:28px}
-.k .ex{background:var(--ex)}.k .wa{background:var(--wa)}.k .w7{background:#ffd54a}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cd{margin-bottom:14px;overflow:auto}.cd h2{font-size:15px;margin:0 0 8px}
-.cd th{background:#f1f5fb;color:var(--tx);cursor:default}
+:root{--bg:#f5f6f8;--cd:#fff;--tx:#1b2430;--mu:#667085;--bd:#e3e7ee;--pri:#1d4ed8;--ex:#fde2e1;--exc:#b42318;--wa:#fff0cc;--wac:#8a5a00;--ok:#dcf5e4;--okc:#17692f;--na:#eef0f3}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--cd:#1b2129;--tx:#e8ecf2;--mu:#98a2b3;--bd:#2c3440;--pri:#6b9bff;--ex:#4a1d1b;--exc:#ff9d94;--wa:#4a3a10;--wac:#ffd272;--ok:#14391f;--okc:#7fe3a0;--na:#262d37}}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{padding:14px 16px;background:var(--cd);border-bottom:1px solid var(--bd);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+h1{font-size:16px;margin:0;flex:1}nav button{margin-right:6px}
+button{border:0;background:var(--pri);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit}
+button.g{background:var(--na);color:var(--tx)}button.on{outline:2px solid var(--pri);outline-offset:1px}
+main{padding:14px;max-width:1300px;margin:auto}.mu{color:var(--mu)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--cd);color:var(--tx);font:inherit;max-width:100%}
+.w{overflow-x:auto;background:var(--cd);border:1px solid var(--bd);border-radius:10px;max-height:72vh}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap;text-align:left}
+th{position:sticky;top:0;background:var(--cd);z-index:1}td.c{cursor:pointer;text-align:center}td.c:hover{outline:2px solid var(--pri);outline-offset:-2px}
+.ex{background:var(--ex);color:var(--exc)}.wa{background:var(--wa);color:var(--wac)}.ok{background:var(--ok);color:var(--okc)}.na{background:var(--na);color:var(--mu)}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k div,.cd{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:12px}.k b{display:block;font-size:26px}
+.cd{margin-bottom:14px;overflow-x:auto}.cd h2{font-size:14px;margin:0 0 8px}
 .n{border-radius:6px;padding:2px 10px;cursor:pointer;display:inline-block;min-width:34px;text-align:center}
 .sb{display:flex;height:10px;border-radius:5px;overflow:hidden;min-width:120px;background:var(--na)}.sb i{display:block}
-.sb .ex{background:#e5484d}.sb .w7{background:#e0a100}.sb .wa{background:#f6d860}.sb .ok{background:#30a46c}
-.ov{position:fixed;inset:0;background:#0b1b3a99;display:flex;align-items:center;justify-content:center;padding:14px;z-index:9}.ov[hidden]{display:none}
-#lg{background:linear-gradient(135deg,#0b3a8c,#1d63d6);z-index:10}.mc{background:var(--cd);border-radius:14px;padding:24px;width:100%;max-width:520px;max-height:94vh;overflow:auto}.mc h3{margin:0 0 4px;font-size:18px}.mc label{display:block;margin:12px 0 4px;font-weight:600;font-size:13px}.mc input,.mc select{width:100%}
-.bt2{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}#le{color:var(--exc);margin-top:8px;min-height:18px}
-@media(max-width:900px){.k{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}header{flex-wrap:wrap}}
-.lg{width:48px;height:30px}
-header{min-height:80px;border-radius:0 0 16px 16px;background:linear-gradient(90deg,#0a3480 0%,#0d44a6 38%,rgba(16,80,190,.3) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='76'%3E%3Cg fill='white' fill-opacity='.2'%3E%3Crect x='6' y='24' width='84' height='36' rx='3'/%3E%3Cpath d='M94 60V34l8-8h26l10 14v20z'/%3E%3Ccircle cx='28' cy='62' r='7'/%3E%3Ccircle cx='70' cy='62' r='7'/%3E%3Ccircle cx='122' cy='62' r='7'/%3E%3C/g%3E%3C/svg%3E") right bottom/auto 100% repeat-x,#1558c8}
-header h1 small{display:block;font-size:14px;font-weight:500;opacity:.9;margin-top:2px}
-#hb{display:flex;gap:8px;margin:0 6px}#hb[hidden]{display:none}
-.hq{background:#ffffff26;color:#fff;border:1px solid #ffffff66}.hr{background:#fff;color:#14336b}.he{background:#1e63d6;color:#fff;border:1px solid #ffffff55}
-.bar{background:#e6eefa;border:1px solid #d3e1f6;padding:16px 18px;gap:14px}
-.bar label{color:#14336b;font-size:13px}
-.bar input,.bar select{height:42px;border-radius:10px;border:1px solid #d3deef;padding:0 12px}.sr input{padding-right:36px}.sr svg{top:13px}
-.bar button{height:42px;border-radius:10px;padding:0 24px;font-size:15px}
-.inf{display:flex;align-items:center;background:#e6eefa;border:1px solid #d3e1f6;border-radius:10px;padding:9px 14px}
-.inf::before{content:"i";display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:var(--pri);color:#fff;font-weight:700;font-size:12px;margin-right:10px;flex:none}
-.w{border-radius:12px;padding:0}
-table{border-collapse:separate;border-spacing:0;font-size:13px}
-th,td{padding:6px 10px;border-bottom:2px solid #fff;border-right:2px solid #fff;background:#fff}
-th{text-align:center;position:sticky;padding:9px 24px 9px 10px;background:var(--navy);border-right:1px solid #ffffff22}
-.so{position:absolute;right:8px;top:50%;transform:translateY(-50%);margin:0}
-tbody tr:nth-child(even) td{background:#fff}tbody tr:hover td{background:#eef4ff}
-#tb td:nth-child(3){font-weight:700;color:var(--navy)}
-.cd td.ex{background:var(--ex);color:var(--exc)}.cd td.wa{background:#fff0b3;color:var(--wac)}.cd td.w7{background:#ffd54a;color:#4d3300}
-td.c.ex{background:var(--ex)}td.c.wa{background:#fff0b3}td.c.w7{background:#ffd54a}
-th,td{border-bottom:1px solid #c5d0e2;border-right:1px solid #c5d0e2}
-table{border-left:1px solid #c5d0e2}
-th{border-bottom:1px solid #0b2556;border-right:1px solid #ffffff40}
-td.c.ok,td.c.na{background:#fff;color:var(--tx)}
-tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
-.rz{position:absolute;right:-3px;top:0;bottom:0;width:9px;cursor:col-resize;z-index:3}.rz:hover{background:#ffffff66}
-#tb{min-width:100%}#tb td{overflow:hidden;text-overflow:ellipsis}
-.n.pp{background:#ffe5cf;color:#c2500a}
-#toast{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:30;padding:12px 22px;border-radius:10px;color:#fff;font-weight:600;box-shadow:0 8px 24px #0004;max-width:90vw;text-align:center}
-.t-ok{background:#16a34a}.t-info{background:#1e63d6}.t-warn{background:#d97706}
-.pl.dc{background:#16a34a;color:#fff;box-shadow:0 0 0 1px #fff}.pl.up{background:#e5e7eb;color:#374151}
-.dv{display:inline-block;width:1px;height:20px;background:#c5d0e2;margin:0 0 0 8px;vertical-align:-6px}
-.di{display:inline-block;margin:-4px 0 -4px 8px;vertical-align:-9px;line-height:0;text-decoration:none;cursor:pointer}
-.di svg{width:27px;height:28px;overflow:visible}.di:hover svg{filter:brightness(.92)}.di.up{opacity:.45;filter:grayscale(1)}
-.kt{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:3px;padding:2px 12px;border-radius:14px;font-size:11.5px;font-weight:700;line-height:1.5}
-.kt svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;flex:none}
-.kt.p{background:#ffedc7;color:#c2500a}.kt.e{background:#fde0e0;color:#c0262d}.kt.b{background:#eef0f3;color:#444}.kt.o{background:#dcf5e4;color:#17692f}
-#toast{top:auto;bottom:26px}
-.mc textarea{width:100%;padding:9px 10px;border:1px solid #d3deef;border-radius:8px;background:#fff;color:var(--tx);font:inherit;resize:vertical}
-.nt{font-size:11px;font-style:italic;opacity:.85;max-width:200px;margin:2px auto 0;overflow:hidden;text-overflow:ellipsis}
-.ro #b2,.ro #b3,.ro #b4,.ro .he,.ro button[onclick="openA()"]{display:none}
-.mc select:disabled,.mc input:disabled,.mc textarea:disabled{background:#f1f4f9;color:var(--tx);opacity:1}
-#ml{flex-wrap:wrap}
-.sbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.stb{background:#fff;color:var(--navy);border:1px solid #cfdaec;font-weight:600}.stb.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-.stb span{background:#e6eefa;color:var(--navy);border-radius:10px;padding:0 8px;margin-left:8px;font-size:12px}.stb.on span{background:#ffffff33;color:#fff}
-.mc.wide{max-width:880px}
-tr[data-p] td:not(.c){cursor:pointer}tr[data-p]:hover td:nth-child(3){text-decoration:underline}
-.mc td.ex{background:var(--ex);color:var(--exc)}.mc td.wa{background:#fff0b3;color:var(--wac)}.mc td.w7{background:#ffd54a;color:#4d3300}
-.nf{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:6px;border-radius:50%;background:#e5484d;color:#fff;font-size:11px;font-weight:700;vertical-align:1px}
-.nofoto{height:160px;border:2px dashed #e0a100;border-radius:10px;background:#fff8e1;color:#7a5b00;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;gap:4px;font-size:13px}
-.th{width:54px;height:34px;object-fit:cover;border-radius:5px;border:1px solid var(--bd);display:block;margin:0 auto}
-.nfp{display:inline-block;padding:1px 8px;border-radius:9px;background:#fde0e0;color:#c0262d;font-size:11px;font-weight:600}.nfp.up{background:#e5e7eb;color:#374151}
-td.fo{padding:2px 6px}
-.ck{display:block;margin:4px 0!important;font-weight:400!important}.ck input{width:auto!important;margin-right:6px}
-#sitesw{background:#ffffff26;color:#fff;border:1px solid #ffffff66;border-radius:8px;padding:6px 8px;font-weight:600;max-width:190px}#sitesw option{color:#17263f}
+.sb .ex{background:#e5484d}.sb .wa{background:#f5a524}.sb .ok{background:#30a46c}
+#mo{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:14px;z-index:9}#mo[hidden]{display:none}
+.mc{background:var(--cd);border-radius:12px;padding:18px;width:100%;max-width:400px}.mc h3{margin:0}.mc label{display:block;margin:12px 0 4px}.mc input{width:100%}
+.bt{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
 </style></head><body>
-<div id="lg" class="ov"><div class="mc"><h3>Monitoring Dokumen Armada</h3><p class="mu">Silakan login untuk melanjutkan.</p>
-<label>Site<select id="ls"><option>NDC Jababeka</option><option>NDC Cikupa</option><option>NDC Sidoarjo</option><option>RDC Tamora</option><option>RDC Tallo</option><option>SDC</option><option>HUB AHI</option><option>HUB HCI</option></select></label>
-<label>Username<input id="lu" autocomplete="username"></label>
-<label>Password<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key=='Enter')doLogin()"></label>
-<div id="le"></div><div class="bt2" style="justify-content:space-between;align-items:center"><a href="#" onclick="fpShow();return false" style="color:var(--pri);font-size:13px">Lupa password?</a><button id="lb" onclick="doLogin()">Login</button></div>
-<div id="fp" hidden style="margin-top:14px;border-top:1px solid var(--bd);padding-top:12px"><b>Reset password</b>
-<p class="mu" style="margin:4px 0 8px">Isi username di atas, lalu kode reset akan dikirim ke email admin.</p>
-<button class="g" onclick="fpSend()">Kirim kode ke email</button>
-<div id="fs2" hidden><label>Kode reset (6 digit)<input id="fc" inputmode="numeric" maxlength="6"></label><label>Password baru (min. 6 karakter)<input id="fn" type="password" autocomplete="new-password"></label><label>Ulangi password baru<input id="fn2" type="password" autocomplete="new-password"></label><button onclick="fpReset()" style="margin-top:12px">Simpan password baru</button></div>
-<div id="fm2" style="margin-top:8px;min-height:18px"></div></div></div></div>
-<header><h1><svg class="lg" viewBox="0 0 64 40"><path d="M2 6h38v24H2zM42 14h12l8 9v7H42z"/><circle cx="14" cy="32" r="5"/><circle cx="50" cy="32" r="5"/></svg><span>Monitoring Dokumen Armada</span></h1>
-<button id="b1" class="tb act" onclick="tab('t')"><svg class="i" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Dokumen</button><button id="b2" class="tb" onclick="tab('d')"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Dashboard</button><button id="b3" class="tb" onclick="tab('k')"><svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>KPI Perpanjangan</button><button id="b4" class="tb" onclick="tab('u')"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 010 7M18 14.8c2.2.6 4 2.2 4 5.2"/></svg>Master User</button>
-<span id="hb"><button class="hq" onclick="openA()"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Armada</button><button class="hq" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button><button class="hr" onclick="reset()"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5"/></svg>Reset</button><button class="he" onclick="exportCsv()"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button></span>
-<select id="sitesw" onchange="swSite(this.value)" title="Ganti site"></select><span id="up"></span><button class="tb out" onclick="logout()"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H4V3h5M16 17l5-5-5-5M21 12H9"/></svg>Keluar</button></header>
+<header><h1>Dokumen Armada NDC Jababeka – HCI</h1>
+<nav><button id="b1" onclick="tab('t')">Dokumen</button><button id="b2" class="g" onclick="tab('d')">Dashboard</button><button class="g" onclick="load()">Muat ulang</button></nav></header>
 <main>
-<div id="sbr" class="sbar"></div>
 <section id="st">
-<div class="bar"><label>Cari<span class="sr"><input id="q" placeholder="Kode / nopol…" oninput="renderT()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></span></label>
-<label id="fsl">Alokasi Site<select id="fsi" onchange="renderT()"></select></label>
-<label>Tipe<select id="ft" onchange="renderT()"></select></label>
-<label>Dokumen<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select></label>
-<label>Status<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Expired</option><option value="w7">≤ 7 hari</option><option value="wa">8–30 hari</option><option value="ok">Berlaku</option><option value="pp">Dalam Proses Perpanjang</option><option value="na">Tanpa data</option></select></label>
-<label>Foto armada<select id="ffo" onchange="renderT()"><option value="">Semua</option><option value="no">Belum ada foto</option><option value="yes">Sudah ada foto</option></select></label>
-<label>Bulan<select id="fm"><option value="">Semua</option></select></label>
-<label>Tahun<select id="fy"><option value="">Semua</option></select></label>
-<label>Start date<input type="date" id="f0"></label><label>End date<input type="date" id="fe"></label>
-<button id="bs" onclick="show()"><svg class="i" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>Show</button></div>
-<div class="inf" id="inf"></div>
+<div class="bar"><input id="q" placeholder="Cari kode / nopol…" oninput="renderT()">
+<select id="ft" onchange="renderT()"></select>
+<select id="fd" onchange="renderT()"><option value="">Semua dokumen</option></select>
+<select id="fs" onchange="renderT()"><option value="">Semua status</option><option value="ex">Sudah lewat</option><option value="wa">≤ 30 hari</option><option value="ok">Aman</option><option value="na">Belum ada data</option></select></div>
+<p class="mu">Klik sel tanggal untuk memperbarui masa berlaku dan mengunggah dokumen. Tanda 📎 berarti dokumen sudah diunggah.</p>
 <div class="w"><table id="tb"></table></div></section>
 <section id="sd" hidden></section>
-<section id="sk" hidden></section>
-<section id="su" hidden></section>
 </main>
-<div id="mo" class="ov" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
-<label id="mdl">Tanggal masa berlaku<input type="date" id="md" oninput="pp()"></label>
-<div id="mst"><label>Status (otomatis dari tanggal masa berlaku)</label><div id="mpv" style="margin-top:2px"></div>
-<label class="ck" style="margin-top:8px"><input type="checkbox" id="mp" onchange="pp()"> Sedang dalam proses perpanjang</label></div>
-<label>Keterangan (opsional)<textarea id="mn" rows="2" maxlength="200" placeholder="Contoh: berkas di Samsat, estimasi selesai 10 Nov"></textarea></label></label>
-<label id="mfl">Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="msc0" style="margin-top:6px"><button type="button" class="g" onclick="openScan()">Scan dokumen (kamera)</button> <button type="button" class="g" onclick="openPr()">Ambil hasil scan printer</button></div><div id="mv"></div>
-<div id="ml" class="bt2" style="justify-content:flex-start"></div>
-<div class="bt2"><button id="mdel" class="g" style="margin-right:auto;color:#c0262d;border-color:#f3c0c0" onclick="openDel()">Hapus armada</button><button id="mcl" class="g" onclick="closeM()">Batal</button><button id="msv" onclick="save()">Save</button></div></div></div>
-<div id="mx" class="ov" hidden><div class="mc"><h3>Hapus armada</h3><p class="mu" id="dt"></p>
-<p style="margin:6px 0 0">Armada akan <b>dipindahkan ke sheet Arsip Armada</b> dan hilang dari daftar. File dokumen di Drive tidak dihapus.</p>
-<label>Alasan<select id="dr"><option>Diremajakan (diganti unit baru)</option><option>Tidak digunakan lagi</option><option>Dijual</option><option>Lainnya</option></select></label>
-<label>Catatan (opsional)<textarea id="dn" rows="2" maxlength="200"></textarea></label>
-<label>Ketik kode armada untuk konfirmasi<input id="dk" autocomplete="off"></label>
-<div class="bt2"><button class="g" onclick="closeDel()">Batal</button><button style="background:#c0262d" onclick="doDel()">Hapus</button></div></div></div>
-<div id="mpf" class="ov" hidden><div class="mc wide" id="pfc"></div></div>
-<div id="mus" class="ov" hidden><div class="mc"><h3>User hanya-lihat</h3><p class="mu">User ini hanya bisa melihat dan mendownload dokumen pada site yang dipilih.</p>
-<label>Username<input id="uu" autocomplete="off"></label>
-<label>Password<input id="up2" type="password" autocomplete="new-password" placeholder="Kosongkan jika tidak diubah"></label>
-<label>Site yang boleh dilihat</label><div id="usl"></div>
-<label class="ck" style="margin-top:10px"><input type="checkbox" id="ua"> Akun aktif</label>
-<div class="bt2"><button class="g" onclick="closeU()">Batal</button><button onclick="saveU()">Simpan</button></div></div></div>
-<div id="maj" class="ov" hidden><div class="mc wide"><h3>Ajukan proses perpanjang</h3><div class="mu" id="ajt"></div>
-<div id="ajl" style="max-height:220px;overflow:auto"></div>
-<label>Catatan untuk email (opsional)<textarea id="ajn" rows="2" maxlength="300"></textarea></label>
-<div class="bt2"><button class="g" onclick="closeAj()">Batal</button><button id="ajb" onclick="sendAj()">Kirim pengajuan</button></div></div></div>
-<div id="msc" class="ov" hidden><div class="mc wide"><h3>Scan dokumen</h3><p class="mu" id="scm">Arahkan kamera ke dokumen, pastikan seluruh halaman terlihat jelas, lalu klik Ambil halaman.</p>
-<div style="background:#000;border-radius:10px;overflow:hidden"><video id="scv" autoplay playsinline muted style="width:100%;max-height:50vh;display:block;object-fit:contain"></video></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0"><button type="button" onclick="scanShot()">Ambil halaman</button><button type="button" class="g" onclick="document.getElementById('scf').click()">Kamera / galeri perangkat</button><label class="ck" style="margin:0 0 0 6px"><input type="checkbox" id="scd" checked> Mode dokumen (hitam-putih, kontras)</label></div>
-<input type="file" id="scf" accept="image/*" capture="environment" hidden onchange="scanFile(this)">
-<div id="sct" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-<div class="bt2"><button type="button" class="g" onclick="closeScan()">Batal</button><button type="button" class="g" id="scu1" onclick="scanUse(false)" disabled>Pakai hasil scan</button><button type="button" id="scu2" onclick="scanUse(true)" disabled>Pakai &amp; simpan</button></div></div></div>
-<div id="mpr" class="ov" hidden><div class="mc wide"><h3>Hasil scan dari printer</h3>
-<p class="mu">Scan dokumen dari printer/scanner ke folder <b id="prfn">Scan Masuk</b> di Google Drive, lalu pilih filenya di sini. <a id="prf" href="#" target="_blank" rel="noopener">Buka folder</a></p>
-<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px">
-<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>File terbaru</b><button type="button" class="g" onclick="prLoad()">Muat ulang</button></div><div id="prl" style="max-height:340px;overflow:auto"></div></div>
-<div id="prv" style="border:1px solid var(--bd);border-radius:10px;min-height:220px;display:flex;align-items:center;justify-content:center;color:var(--mu);overflow:hidden;text-align:center;padding:8px">Pilih file untuk melihat pratinjau</div></div>
-<div class="bt2"><button type="button" class="g" onclick="closePr()">Tutup</button><button type="button" id="pru" onclick="prUse()" disabled>Gunakan file ini</button></div></div></div>
-<div id="toast"></div>
-<div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
-<label>Alokasi Site (menu site)<input id="as" list="dls"></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
-<label>Site (kolom A)<input id="aal" maxlength="80"></label>
-<label>Masa berlaku dokumen (boleh dikosongkan, bisa diisi nanti)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><small class="mu">PAJAK</small><input type="date" id="ad0"></div><div><small class="mu">STNK</small><input type="date" id="ad1"></div><div><small class="mu">KIR</small><input type="date" id="ad2"></div><div><small class="mu">SIPA</small><input type="date" id="ad3"></div><div><small class="mu">IBM</small><input type="date" id="ad4"></div></div>
-<label>Foto armada tampak depan, nopol harus terlihat <b style="color:#c0262d">(wajib)</b><input type="file" id="af" accept="image/*" onchange="pva(this)"></label><div id="avp"></div>
-<div class="bt2"><button class="g" onclick="closeA()">Batal</button><button onclick="addA()">Simpan</button></div></div></div>
-<datalist id="dls"></datalist><datalist id="dlt"></datalist>
+<div id="mo" hidden><div class="mc"><h3 id="mt"></h3><p id="ms" class="mu"></p>
+<label>Tanggal masa berlaku<input type="date" id="md"></label>
+<label>Upload dokumen (PDF/foto, maks 4 MB)<input type="file" id="mf" accept=".pdf,image/*"></label>
+<div id="ml"></div><div class="bt"><button class="g" onclick="closeM()">Batal</button><button onclick="save()">Simpan</button></div></div></div>
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyv_BlH1ktlaQ5ri2OzKt26-eS5xMuKz2xYSoFBAv-o2bFacYj0dwV0v9Jughskcfqz/exec';
-const DOCS=['PAJAK','STNK','KIR','SIPA','IBM','SRUT'],DORD=[5,0,1,2,3,4],ALLD=[0,1,2,3,4],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SCRIPT_URL='GANTI_DENGAN_URL_WEB_APP_/exec';
+const DOCS=['PAJAK','STNK','KIR','SIPA','IBM'],MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
-const LB={ex:'Expired',w7:'≤ 7 hari',wa:'8–30 hari',ok:'Berlaku',na:'Tanpa data'};
+const DEMO=[{k:'I5T',p:'B9058BEN',t:'WINGBOX',d:['30 Aug 2026','30 Aug 2028','14 Apr 2026','8 Jun 2027','3 Jan 2027'],l:['','','','','']},
+{k:'I3F',p:'A8664VA',t:'FUSO',d:['12 Nov 2026','12 Nov 2029','3 Sep 2026','10 Des 2026','29 Oct 2026'],l:['','','','','']},
+{k:'I1C',p:'FUKU8300135',t:'CONT-40',d:['-','-','17 Sep 2026','-','-'],l:['','','','','']},
+{k:'I90',p:'A8561VB',t:'CDE LONG CHASSIS',d:['26 Jul 2027','26 Jul 2029','3 Aug 2026','5 Nov 2026','29 Oct 2026'],l:['','','','','']}];
 const T0=new Date();T0.setHours(0,0,0,0);
-let SITE='',ROLE='',SO={k:'',d:1},ROWS=[],PIN='',USR='',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
+let ROWS=[],PIN=sessionStorage.getItem('pin')||'',cur=null;
 const $=s=>document.querySelector(s);
-function pd(s){s=s||'';let m=/(\d{1,2})[\s-]+([A-Za-z]+)[\s-]+(\d{4})/.exec(s);if(m){const k=MON[m[2].slice(0,3).toLowerCase()];return k==null?null:new Date(+m[3],k,+m[1])}
+function pd(s){s=s||'';let m=/(\d{1,2})[\s-]+([A-Za-z]+)[\s-]+(\d{4})/.exec(s);if(m){const k=MON[m[2].slice(0,3).toLowerCase()];return k==null?null:new Date(+m[3],k,+m[1]);}
 m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
-function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
+function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=30?'wa':'ok',n,d}}
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-function tab(x){if(ROLE&&ROLE!='admin')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';$('#su').hidden=x!='u';['b1','b2','b3','b4'].forEach((b,i)=>$('#'+b).className='tb'+('tdku'[i]==x?' act':''));$('#hb').hidden=x!='t'}
-function doLogin(){LSITE=$('#ls').value;USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
-function logout(k){SITE='';LSITE='';ALLROWS=[];ROLE='';ASITES=['*'];USERS=[];SEL.clear();PENG=[];document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
-function load(q){
-if(!USR||!PIN){$('#lg').hidden=false;return}
-if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
-window[cb]=r=>{busy=false;s.remove();delete window[cb];
-if(r.error){logout(1);$('#le').textContent=r.error;return}
-ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');if(ROLE!='admin')tab('t');$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID')+(r.ver?' · script '+r.ver:' · script lama');
-if(q&&Date.now()<hold)return;
-ASITES=r.sites||['*'];USERS=r.users||[];PENG=r.pe||[];const g=JSON.stringify([r.rows,r.hist,r.users,r.sites]);if(g==sig)return;sig=g;setRows(r.rows);HIST=r.hist||[];render()};
-s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
-s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
-setInterval(()=>{if(!document.hidden&&$('#mo').hidden&&Date.now()>=hold)load(true)},5000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true)});
+function tab(x){$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#b1').className=x=='t'?'':'g';$('#b2').className=x=='d'?'':'g';}
+function load(){
+if(SCRIPT_URL.startsWith('GANTI')){ROWS=JSON.parse(JSON.stringify(DEMO));render();return}
+if(!PIN){PIN=prompt('PIN admin:')||'';sessionStorage.setItem('pin',PIN)}
+const cb='cb'+Date.now(),s=document.createElement('script');
+window[cb]=r=>{s.remove();if(r.error){alert(r.error);PIN='';sessionStorage.removeItem('pin');return}ROWS=r.rows;render()};
+s.onerror=()=>alert('Gagal terhubung ke Apps Script. Cek URL dan akses Web App (Anyone).');
+s.src=SCRIPT_URL+'?action=list&pin='+encodeURIComponent(PIN)+'&callback='+cb;document.body.appendChild(s)}
 function render(){
-const sv=$('#fsi').value,sites=SS();
-$('#fsi').innerHTML='<option value="">Semua site</option>'+sites.map(t=>`<option${t==sv?' selected':''}>${t}</option>`).join('');
 const ts=[...new Set(ROWS.map(r=>r.t))].sort(),v=$('#ft').value;
 $('#ft').innerHTML='<option value="">Semua tipe</option>'+ts.map(t=>`<option${t==v?' selected':''}>${t}</option>`).join('');
-if($('#fd').options.length<2)DORD.filter(i=>i<5).forEach(i=>$('#fd').add(new Option(DOCS[i],i)));
-if($('#fm').options.length<2)['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'].forEach((m,i)=>$('#fm').add(new Option(m,i+1)));
-const ys=[...new Set(ROWS.flatMap(r=>r.d.map(x=>{const d=pd(x);return d&&d.getFullYear()})).filter(Boolean))].sort(),yv=$('#fy').value;
-$('#fy').innerHTML='<option value="">Semua</option>'+ys.map(y=>`<option${y==yv?' selected':''}>${y}</option>`).join('');
-$('#dls').innerHTML=sites.map(x=>'<option value="'+x+'">').join('');$('#dlt').innerHTML=ts.map(x=>'<option value="'+x+'">').join('');
-renderSw();renderSites();renderT();renderD();renderK();renderU()}
-function show(){F={m:$('#fm').value,y:$('#fy').value,s:$('#f0').value,e:$('#fe').value};renderT()}
-function reset(){['fm','fy','f0','fe','ffo'].forEach(i=>$('#'+i).value='');F={m:'',y:'',s:'',e:''};renderT()}
-function inR(d){if(!d)return false;if(F.m&&d.getMonth()!=F.m-1)return false;if(F.y&&d.getFullYear()!=F.y)return false;if(F.s&&d<new Date(F.s+'T00:00'))return false;if(F.e&&d>new Date(F.e+'T00:00'))return false;return true}
-function frows(){
-const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value,dOn=F.m||F.y||F.s||F.e;
-return ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
-if(SITE&&grp(r.n)!=SITE)return false;if($('#fsi').value&&grp(r.n)!=$('#fsi').value)return false;if(q&&!(r.k+r.p+(r.g||'')).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;if($('#ffo').value=='no'&&r.f)return false;if($('#ffo').value=='yes'&&!r.f)return false;
-if(!s&&!dOn)return true;
-return(d===''?ALLD:[+d]).some(i=>(!s||(s=='pp'?/proses|^1$/i.test(r.s[i]):st(r.d[i]).k==s))&&(!dOn||inR(pd(r.d[i]))))})
-.sort(([a],[b])=>{if(SO.k==='')return 0;const v=r=>typeof SO.k=='number'?(pd(r.d[SO.k])||{getTime:()=>9e15}).getTime():r[SO.k];const x=v(a),y=v(b);return(typeof x=='number'?x-y:String(x).localeCompare(String(y),'id',{numeric:true}))*SO.d})}
-function srt(k){SO=SO.k===k?{k,d:-SO.d}:{k,d:1};renderT()}
-const TH=(t,k,c)=>'<th class="'+(c||'')+'" onclick="srt('+JSON.stringify(k).replace(/"/g,"'")+')">'+t+'<span class="so">'+(SO.k===k?(SO.d>0?'▲':'▼'):'⇅')+'</span><i class="rz" onmousedown="rz(event)" onclick="event.stopPropagation()" ondblclick="rzReset()"></i></th>';
+if($('#fd').options.length<2)DOCS.forEach((d,i)=>$('#fd').add(new Option(d,i)));
+renderT();renderD()}
 function renderT(){
-const rows=frows();$('#inf').textContent='Menampilkan '+rows.length+' dari '+ROWS.length+' armada. Ikon scan dokumen biru berarti file sudah diunggah (klik ikon untuk melihat file). Klik baris armada untuk melihat profil. Klik sel tanggal untuk update, perpanjang, upload, dan download dokumen. Tarik garis pemisah judul kolom untuk mengubah lebar (klik dua kali untuk reset).';
-$('#tb').innerHTML='<colgroup>'+'<col>'.repeat(12)+'</colgroup><tr>'+TH('Site','g')+TH('Alokasi Site','n')+TH('Kode','k')+TH('No Polisi','p')+TH('Tipe','t')+TH('Foto','f','d')+DORD.map(i=>TH(DOCS[i],i,'d')).join('')+'</tr>'+
-rows.map(([r,ri],n)=>`<tr data-p="${ri}"><td>${EH(r.g||'')}</td><td>${r.n?EH(r.n):'<span class="mu">–</span>'}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td><td class="fo">${THUMB(r)}</td>`+DORD.map(i=>{const x=r.d[i];
-if(i==5)return`<td class="c" data-r="${ri}" data-i="5">${SRB(r)}${NTB(r,5)}</td>`;const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${DOCB(r.l[i])}${LAB(r.s[i],x)}${NTB(r,i)}</td>`}).join('')+'</tr>').join('');applyW()}
-$('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c){openM(+c.dataset.r,+c.dataset.i);return}const t=e.target.closest('tr[data-p]');if(t&&e.target.closest('td'))openProf(+t.dataset.p)};
-let W=null;try{W=JSON.parse(localStorage.getItem('cw')||'null')}catch(e){}
-function applyW(){const t=$('#tb');if(!W||W.length!=12){W=null;t.style.tableLayout='';t.style.width='';return}
-t.style.tableLayout='fixed';t.style.width=W.reduce((a,b)=>a+b,0)+'px';t.querySelectorAll('col').forEach((c,i)=>c.style.width=W[i]+'px')}
-function rz(e){e.preventDefault();e.stopPropagation();const th=e.target.parentNode,ch=[...th.parentNode.children],idx=ch.indexOf(th);
-if(!W)W=ch.map(x=>x.offsetWidth);const x0=e.clientX,w0=W[idx];applyW();
-const mv=ev=>{W[idx]=Math.max(40,w0+ev.clientX-x0);applyW()};
-const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);try{localStorage.setItem('cw',JSON.stringify(W))}catch(e){}};
-document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up)}
-function rzReset(){W=null;try{localStorage.removeItem('cw')}catch(e){}renderT()}
-function openA(){['as','ak','ap','at'].forEach(i=>$('#'+i).value='');$('#aal').value=LSITE||'NDC Jababeka';const ss=SS();$('#dls').innerHTML=ss.map(x=>'<option value="'+EH(x)+'">').join('');$('#as').value=SITE||ss[0]||'';ALLD.forEach(i=>$('#ad'+i).value='');$('#af').value='';$('#avp').innerHTML='';$('#ma').hidden=false}
-function closeA(){$('#ma').hidden=true}
-const fd=v=>v?(+v.slice(8)+' '+MN[+v.slice(5,7)-1]+' '+v.slice(0,4)):'';
-async function addA(){if(ROLE!='admin')return;
-const site=$('#as').value.trim(),k=$('#ak').value.trim().toUpperCase(),p=$('#ap').value.trim().toUpperCase().replace(/\s+/g,''),t=$('#at').value.trim().toUpperCase();
-if(!k||!p||!t)return alert('Kode armada, No polisi, dan Tipe wajib diisi.');
-if(ROWS.some(r=>r.k.toUpperCase()==k&&grp(r.n)==grp(site)))return alert('Kode armada '+k+' sudah ada di site '+site+'.');
-const pf0=$('#af').files[0];if(!pf0)return alert('Foto armada tampak depan wajib diunggah (nopol harus terlihat).');if(pf0.size>10*1024*1024)return alert('Foto maksimal 10 MB.');
-const d=ALLD.map(i=>fd($('#ad'+i).value));hold=Date.now()+10000;
-toast('Menyimpan…','info',0);const pf=await cmp(pf0);const pl={user:USR,pin:PIN,action:'add',site,kode:k,nopol:p,tipe:t,dates:d,gsite:$('#aal').value.trim()||'NDC Jababeka',file:{name:pf.name,mime:pf.type||'image/jpeg',b64:await b64(pf)}};
-const nr={n:site,g:$('#aal').value.trim()||'NDC Jababeka',k,p,t,d:[...d,''].map(x=>x||'-'),l:['','','','','',''],s:['','','','','',''],c:['','','','','',''],f:'#'};ROWS.push(nr);closeA();render();hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(r=>r.json()).then(x=>{hold=0;if(x.error){const i=ROWS.indexOf(nr);if(i>-1)ROWS.splice(i,1);render();toast('⚠️ Gagal menambah: '+x.error,'warn',9000);sig='';load(true);return}if(x.link)nr.f=x.link;sig='';render();toast('✅ Berhasil ditambahkan: '+k,'ok',4000)})
-.catch(()=>setTimeout(()=>confirmSave(rows=>rows.some(x=>String(x.k).toUpperCase()==k&&x.n==site),'Berhasil ditambahkan: '+k),800))}
-let tt;function toast(m,t,ms){const e=$('#toast');e.className='t-'+(t||'info');e.textContent=m;e.style.display='block';clearTimeout(tt);if(ms!==0)tt=setTimeout(()=>e.style.display='none',ms||4000)}
-function jp(cb){const n='v'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb(null)};
-s.src=SCRIPT_URL+'?action=list&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&callback='+n;document.body.appendChild(s)}
-function confirmSave(check,msg,n){n=n||0;jp(x=>{
-if(x&&x.rows&&check(x.rows)){hold=0;setRows(x.rows);HIST=x.hist||HIST;sig=JSON.stringify([x.rows,x.hist]);render();toast('✅ '+msg,'ok',5000);return}
-if(n>=28){hold=0;toast('⚠️ Perubahan belum terkonfirmasi di Sheet. Cek koneksi atau deployment Apps Script, lalu coba lagi.','warn',9000);return}
-setTimeout(()=>confirmSave(check,msg,n+1),1500)})}
-async function cmp(f){
-if(!f.type.startsWith('image/')||f.size<300000)return f;
-try{const bm=await createImageBitmap(f),sc=Math.min(1,1600/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
-const bl=await new Promise(ok=>c.toBlob(ok,'image/jpeg',.82));
-if(bl&&bl.size<f.size)return new File([bl],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'})}catch(e){}
-return f}
-function api(q,cb){const n='a'+Date.now(),s=document.createElement('script');window[n]=x=>{s.remove();delete window[n];cb(x)};s.onerror=()=>{s.remove();cb({error:'Gagal terhubung ke Apps Script.'})};s.src=SCRIPT_URL+'?'+q+'&callback='+n;document.body.appendChild(s)}
-function fpShow(){$('#fp').hidden=false;$('#fm2').textContent='';$('#lu').focus()}
-function fpSend(){const u=$('#lu').value.trim();if(!u){$('#fm2').textContent='Isi username di atas dulu.';return}
-$('#fm2').textContent='Mengirim kode…';api('action=forgot&user='+encodeURIComponent(u),x=>{if(x.error){$('#fm2').textContent=x.error;return}$('#fm2').textContent=x.msg;$('#fs2').hidden=false;$('#fc').focus()})}
-function fpReset(){const u=$('#lu').value.trim(),c=$('#fc').value.trim(),n=$('#fn').value,m=$('#fm2');
-if(!/^\d{6}$/.test(c)){m.textContent='Kode harus 6 digit.';return}
-if(n.length<6){m.textContent='Password baru minimal 6 karakter.';return}
-if(n!==$('#fn2').value){m.textContent='Ulangi password baru tidak sama.';return}
-m.textContent='Menyimpan…';api('action=reset&user='+encodeURIComponent(u)+'&code='+c+'&np='+encodeURIComponent(n),x=>{if(x.error){m.textContent=x.error;return}
-m.textContent='Password berhasil diubah. Silakan login dengan password baru.';$('#fs2').hidden=true;['fc','fn','fn2','lp'].forEach(i=>$('#'+i).value='');$('#lp').focus()})}
-let HIST=[],KF={m:'',y:'',s:'',e:''};
-function kreset(){KF={m:'',y:'',s:'',e:''};renderK()}
-function kset(k,v){KF[k]=v;renderK()}
-function renderK(){
-const AL=new Set(ROWS.map(r=>r.n)),H=HIST.filter(h=>AL.has(h.n)&&(!SITE||h.n==SITE)&&(!KF.m||+h.tg.slice(5,7)==KF.m)&&(!KF.y||h.tg.slice(0,4)==KF.y)&&(!KF.s||h.tg>=KF.s)&&(!KF.e||h.tg<=KF.e)),ok=h=>h.st=='Tepat Waktu';
-const n=H.length,tw=H.filter(ok).length,pct=n?Math.round(tw/n*100):0,avg=n?(H.reduce((a,h)=>a+h.s,0)/n).toFixed(1):'0';
-const yrs=[...new Set(HIST.map(h=>h.tg.slice(0,4)))].sort(),MB=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-const row=(nm,hs)=>{const m=hs.length,a=hs.filter(ok).length;return`<tr><td><b>${nm}</b></td><td>${m}</td><td><span class="n ok">${a}</span></td><td><span class="n ex">${m-a}</span></td><td>${m?Math.round(a/m*100)+'%':'–'}</td><td>${m?(hs.reduce((x,h)=>x+h.s,0)/m).toFixed(1):'–'}</td><td><div class="sb"><i class="ok" style="width:${m?a/m*100:0}%"></i><i class="ex" style="width:${m?(m-a)/m*100:0}%"></i></div></td></tr>`};
-const T='<tr><th>{h}</th><th>Total perpanjangan</th><th>Tepat waktu</th><th>Terlambat</th><th>% Tepat waktu</th><th>Rata-rata selisih (hari)</th><th>Proporsi</th></tr>';
-const dd=x=>{const d=pd(x);return d?fmt(d):x};
-let h=`<div class="bar" style="margin-bottom:12px"><label>Bulan<select onchange="kset('m',this.value)"><option value="">Semua</option>${MB.map((m,i)=>`<option value="${i+1}"${KF.m==i+1?' selected':''}>${m}</option>`).join('')}</select></label><label>Tahun<select onchange="kset('y',this.value)"><option value="">Semua</option>${yrs.map(y=>`<option${KF.y==y?' selected':''}>${y}</option>`).join('')}</select></label><label>Dari tanggal<input type="date" value="${KF.s}" onchange="kset('s',this.value)"></label><label>Sampai tanggal<input type="date" value="${KF.e}" onchange="kset('e',this.value)"></label><button class="g" onclick="kreset()">Reset</button><span class="mu" style="align-self:center">Tepat waktu = perpanjangan dilakukan sebelum atau tepat pada tanggal expired lama.</span></div>`;
-h+=`<div class="k"><div><b>${n}</b>Total perpanjangan</div><div style="background:var(--ok)"><b>${tw}</b>Tepat waktu</div><div class="ex"><b>${n-tw}</b>Terlambat</div><div><b>${pct}%</b>Ketepatan waktu</div><div><b>${avg}</b>Rata-rata hari sebelum expired</div></div>`;
-if(!n){h+='<div class="cd mu">Belum ada data perpanjangan pada periode ini. Data tercatat otomatis setiap kali masa berlaku diperbarui ke tanggal yang lebih baru.</div>';$('#sk').innerHTML=h;return}
-h+='<div class="cd"><h2>Harian (per tanggal perpanjangan)</h2><div style="max-height:340px;overflow:auto"><table>'+T.replace('{h}','Tanggal')+[...new Set(H.map(x=>x.tg))].sort().reverse().map(d=>row(dd(d),H.filter(x=>x.tg==d))).join('')+'</table></div></div>';
-h+='<div class="g2"><div class="cd"><h2>Per dokumen</h2><table>'+T.replace('{h}','Dokumen')+DOCS.slice(0,5).map(d=>row(d,H.filter(x=>x.d==d))).join('')+'</table></div>';
-h+='<div class="cd"><h2>Per tipe armada</h2><table>'+T.replace('{h}','Tipe')+[...new Set(H.map(x=>x.t))].sort().map(t=>row(t,H.filter(x=>x.t==t))).join('')+'</table></div></div>';
-h+='<div class="cd"><h2>Riwayat perpanjangan terbaru</h2><table><tr><th>Waktu</th><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th><th>Oleh</th></tr>'+
-H.slice().sort((a,b)=>b.w.localeCompare(a.w)).slice(0,30).map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td><b>${x.k}</b></td><td>${x.p}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${ok(x)?'ok':'ex'}">${x.st}</span></td><td>${x.u||'–'}</td></tr>`).join('')+'</table></div>';
-$('#sk').innerHTML=h}
-function printDoc(id){
-toast('Menyiapkan dokumen untuk dicetak…','info',0);
-api('action=file&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&id='+encodeURIComponent(id),x=>{
-if(x.error){toast('⚠️ '+x.error,'warn',8000);return}
-const bin=atob(x.b64),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);
-const url=URL.createObjectURL(new Blob([a],{type:x.mime})),fr=document.createElement('iframe');
-fr.style.cssText='position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';
-if(x.mime.startsWith('image/'))fr.srcdoc='<html><body style="margin:0"><img src="'+url+'" style="max-width:100%" onload="window.focus();window.print()"></body></html>';
-else{fr.src=url;fr.onload=()=>setTimeout(()=>{try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){window.open(url)}},500)}
-document.body.appendChild(fr);$('#toast').style.display='none';
-setTimeout(()=>{fr.remove();URL.revokeObjectURL(url)},120000)})}
-// Site (kolom A) yang bisa dipilih saat login, dan menu Alokasi Site (kolom B) yang selalu tampil untuk admin.
-const LOGIN_SITES=['NDC Jababeka','NDC Cikupa','NDC Sidoarjo','RDC Tamora','RDC Tallo','SDC','HUB AHI','HUB HCI'];
-const SITE_TABS={'NDC Jababeka':['NDC Jababeka HCI','NDC Jababeka Inbound Trucking','NDC Jababeka AHI','NDC Jababeka FBI','NDC Jababeka KLS','NDC Jababeka KLS HO'],'NDC Cikupa':['NDC Cikupa HCI']};
-const GRP={};
-const grp=x=>GRP[String(x||'').trim().toLowerCase()]||x;
-let LSITE='',ALLROWS=[];
-function setRows(rs){ALLROWS=rs;
-if(ROLE!='admin'&&LSITE&&!rs.some(x=>x.g==LSITE)&&rs.length)LSITE=rs[0].g;
-ROWS=LSITE?rs.filter(x=>x.g==LSITE):rs}
-const ALOK_ALL=()=>[...new Set([...Object.values(SITE_TABS).flat(),...ALLROWS.map(r=>r.n).filter(Boolean)])];
-function renderSw(){const el=$('#sitesw');if(!el)return;const have=[...new Set(ALLROWS.map(x=>x.g).filter(Boolean))],ls=ROLE=='admin'?LOGIN_SITES:LOGIN_SITES.filter(x=>have.includes(x)).concat(have.filter(x=>!LOGIN_SITES.includes(x)));
-el.innerHTML=ls.map(x=>'<option'+(x==LSITE?' selected':'')+'>'+EH(x)+'</option>').join('')}
-function swSite(v){LSITE=v;SITE='';SEL.clear();DF.s='';$('#fsi').value='';setRows(ALLROWS);render()}
-const VR=()=>SITE?ROWS.filter(r=>grp(r.n)==SITE):ROWS;
-let ASITES=['*'],USERS=[],EU=null;
-const SS=()=>{const d=[...new Set(ROWS.map(r=>r.n).filter(Boolean))],p=ROLE=='admin'?(SITE_TABS[LSITE]||[]):[];return[...new Set([...p,...d])]};
-function renderSites(){const ss=SS(),all=ROLE=='admin'||ss.length>1;if(!all&&ss.length&&SITE!=ss[0])SITE=ss[0];if(SITE&&!ss.includes(SITE))SITE='';
-$('#fsl').style.display=SITE?'none':'';
-$('#sbr').innerHTML=(all?['',...ss]:ss).map(v=>`<button class="stb${SITE==v?' on':''}" onclick="setSite('${esc(v)}')">${v||'Semua alokasi site'}<span>${v?ROWS.filter(r=>grp(r.n)==v).length:ROWS.length}</span></button>`).join('')}
-function setSite(v){SITE=v;$('#fsi').value='';DF.s='';renderSites();renderT();renderD();renderK();renderU()}
-function openDel(){const r=cur.r;$('#dt').textContent=r.k+' · '+r.p+' · '+r.n;$('#dr').selectedIndex=0;$('#dn').value='';$('#dk').value='';closeM();$('#mx').hidden=false;setTimeout(()=>$('#dk').focus(),50)}
-function closeDel(){$('#mx').hidden=true}
-function doDel(){if(ROLE!='admin')return;const r=cur.r;
-if($('#dk').value.trim().toUpperCase()!=String(r.k).toUpperCase())return alert('Ketik kode armada '+r.k+' untuk konfirmasi.');
-const pl={user:USR,pin:PIN,action:'delete',site:r.n,kode:r.k,reason:$('#dr').value,note:$('#dn').value.trim()};
-closeDel();toast('Menghapus…','info',0);hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ Gagal menghapus: '+x.error,'warn',9000);return}
-const i=ROWS.indexOf(r);if(i>-1)ROWS.splice(i,1);sig='';render();toast('✅ Armada '+r.k+' dipindahkan ke Arsip Armada','ok',5000)})
-.catch(()=>setTimeout(()=>confirmSave(rows=>!rows.some(y=>y.k==r.k&&y.n==r.n),'Armada '+r.k+' dipindahkan ke Arsip Armada'),800))}
-function closeProf(){$('#mpf').hidden=true}
-function profDoc(ri,i){closeProf();openM(ri,i)}
-function profDel(ri){cur={r:ROWS[ri],i:0};closeProf();openDel()}
-function openProf(ri){
-const r=ROWS[ri];if(!r)return;PRI=ri;const c={ex:0,w7:0,wa:0,ok:0,na:0},dd=x=>{const d=pd(x);return d?fmt(d):x};
-const rows=DORD.map(i=>{const d=DOCS[i],x=r.d[i],z=st(x),u=r.l[i],ok=u&&u!='#';if(i<5)c[z.k]++;
-return`<tr><td><b>${d}</b></td><td class="${z.k=='ok'||z.k=='na'?'':z.k}">${z.d?fmt(z.d):'–'}</td><td>${z.d?(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):'–'}</td><td>${i==5?'<span class="mu">Lampiran</span>':STP(r.s[i],x)}</td><td style="white-space:normal">${NT(r,i)?EH(NT(r,i)):'–'}</td><td>${ok?'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Buka dokumen">'+DI+'</a>':'<span class="mu">Belum ada</span>'}</td><td><button class="g" onclick="profDoc(${ri},${i})">${ROLE=='admin'?'Ubah':'Buka'}</button></td></tr>`}).join('');
-const H=HIST.filter(h=>h.k==r.k&&h.n==r.n).sort((a,b)=>b.w.localeCompare(a.w));
-$('#pfc').innerHTML=`<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px"><div style="width:280px;max-width:100%;flex:none">${PHOTO(r)}</div><div style="flex:1;min-width:220px"><h3 style="font-size:24px">${EH(r.k)}</h3><div class="mu" style="margin-bottom:10px">${EH(r.p)} · ${EH(r.t)} · ${EH(r.n)}</div><div class="mu" style="margin-bottom:10px;font-size:12px">Site: <b>${EH(r.g||'–')}</b></div>${ROLE=='admin'?'<button class="g" onclick="document.getElementById(\'pfu\').click()">'+(r.f?'Ganti foto armada':'Upload foto armada')+'</button><input type="file" id="pfu" hidden accept="image/*" onchange="upPhoto(this)">':''}</div></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="n ex">${c.ex} Expired</span><span class="n w7">${c.w7} ≤ 7 hari</span><span class="n wa">${c.wa} 8–30 hari</span><span class="n ok">${c.ok} Berlaku</span><span class="n na">${c.na} Belum ada data</span></div>
-<div style="overflow:auto"><table><tr><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Status</th><th>Catatan</th><th>File</th><th></th></tr>${rows}</table></div>
-<h3 style="font-size:14px;margin:16px 0 6px">Riwayat perpanjangan</h3>`+(H.length?`<div style="overflow:auto;max-height:200px"><table><tr><th>Waktu</th><th>Dokumen</th><th>Expired lama</th><th>Expired baru</th><th>Selisih</th><th>Status</th></tr>${H.map(x=>`<tr><td>${dd(x.w.slice(0,10))} ${x.w.slice(11,16)}</td><td>${x.d}</td><td>${dd(x.o)}</td><td>${dd(x.nw)}</td><td>${x.s>0?x.s+' hari sebelum expired':x.s==0?'Tepat di hari expired':'Terlambat '+(-x.s)+' hari'}</td><td><span class="n ${x.st=='Tepat Waktu'?'ok':'ex'}">${x.st}</span></td></tr>`).join('')}</table></div>`:'<p class="mu">Belum ada riwayat perpanjangan.</p>')+
-`<div class="bt2">${ROLE=='admin'?'<button class="g" style="margin-right:auto;color:#c0262d;border-color:#f3c0c0" onclick="profDel('+ri+')">Hapus armada</button>':''}<button onclick="closeProf()">Tutup</button></div>`;
-$('#mpf').hidden=false}
-let PRI=-1;
-const THUMB=r=>{const u=r.f,id=u&&u!='#'&&gid(u);
-if(id)return'<img class="th" loading="lazy" src="https://drive.google.com/thumbnail?id='+id+'&sz=w160" alt="Foto '+EH(r.k)+'" onerror="this.outerHTML=\'<span class=nfp>Foto error</span>\'">';
-return u=='#'?'<span class="nfp up">Mengunggah…</span>':'<span class="nfp">Belum ada foto</span>'};
-const PHOTO=r=>{const u=r.f,id=u&&u!='#'&&gid(u);
-if(id)return'<a href="'+u+'" target="_blank" rel="noopener"><img src="https://drive.google.com/thumbnail?id='+id+'&sz=w800" alt="Foto armada '+EH(r.k)+'" style="width:100%;border-radius:10px;border:1px solid var(--bd);display:block" onerror="this.outerHTML=\'<p class=mu>Pratinjau foto tidak tersedia.</p>\'"></a>';
-if(u=='#')return'<div class="nofoto">Mengunggah foto…</div>';
-return'<div class="nofoto"><b>Belum ada foto armada</b><span>Wajib: foto tampak depan, nopol terlihat jelas.</span></div>'};
-async function upPhoto(inp){const f0=inp.files[0];if(!f0||ROLE!='admin')return;
-if(f0.size>10*1024*1024)return alert('File maksimal 10 MB.');
-const r=ROWS[PRI],old=r.f;toast('Mengunggah foto…','info',0);hold=Date.now()+60000;
-const f=await cmp(f0),pl={user:USR,pin:PIN,action:'photo',site:r.n,kode:r.k,file:{name:f.name,mime:f.type||'image/jpeg',b64:await b64(f)}};
-r.f='#';openProf(PRI);
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){r.f=old;toast('⚠️ Gagal menyimpan foto: '+x.error,'warn',9000);if(!$('#mpf').hidden)openProf(ROWS.indexOf(r));return}
-r.f=x.link;sig='';render();toast('✅ Foto armada '+r.k+' tersimpan','ok',4000);if(!$('#mpf').hidden)openProf(ROWS.indexOf(r))})
-.catch(()=>setTimeout(()=>confirmSave(rows=>{const y=rows.find(z=>z.k==r.k&&z.n==r.n);return y&&y.f&&y.f!=old},'Foto armada '+r.k+' tersimpan'),800))}
-function goFoto(){$('#ffo').value='no';tab('t');renderT()}
-function pva(i){const f=i.files[0],v=$('#avp');if(!f){v.innerHTML='';return}
-if(f.size>10*1024*1024){alert('File maksimal 10 MB.');i.value='';v.innerHTML='';return}
-v.innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto armada" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;border:1px solid var(--bd);margin-top:6px">'}
-function renderU(){const e=$('#su');if(ROLE!='admin'){e.innerHTML='';return}
-e.innerHTML=`<div class="cd"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px;flex-wrap:wrap"><h2 style="margin:0">Master User (hanya lihat per site)</h2><button onclick="openU()">+ Tambah user</button></div>
-<p class="mu" style="margin:0 0 10px">Akun di sini hanya bisa melihat dan mendownload dokumen pada site yang diizinkan. Akun admin tidak ditampilkan di daftar ini.</p>
-<table><tr><th>Username</th><th>Site yang boleh dilihat</th><th>Status</th><th>Aksi</th></tr>${USERS.map((u,i)=>`<tr><td><b>${EH(u.u)}</b></td><td style="white-space:normal">${u.s.includes('*')?'Semua site':u.s.map(EH).join(', ')}</td><td><span class="n ${u.a?'ok':'ex'}">${u.a?'Aktif':'Nonaktif'}</span></td><td><button class="g" onclick="openU(${i})">Ubah</button> <button class="g" style="color:#c0262d" onclick="delU(${i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="4" class="mu">Belum ada user.</td></tr>'}</table></div>`}
-function openU(i){EU=i==null?null:USERS[i];$('#uu').value=EU?EU.u:'';$('#uu').disabled=!!EU;$('#up2').value='';$('#ua').checked=EU?EU.a:true;
-const sel=EU?EU.s:[],chk=x=>'<label class="ck"><input type="checkbox" value="'+EH(x)+'"'+(sel.includes(x)?' checked':'')+'> '+EH(x)+'</label>';
-$('#usl').innerHTML='<label class="ck"><input type="checkbox" value="*"'+(sel.includes('*')?' checked':'')+'> Semua site</label><div class="mu" style="margin-top:6px">Site</div>'+LOGIN_SITES.map(chk).join('')+'<div class="mu" style="margin-top:6px">Alokasi Site</div>'+ALOK_ALL().map(chk).join('');
-$('#mus').hidden=false}
-function closeU(){$('#mus').hidden=true}
-function userPost(pl,okm){toast('Menyimpan…','info',0);hold=Date.now()+30000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(Object.assign({user:USR,pin:PIN},pl))}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ '+x.error,'warn',8000);return}USERS=x.users||[];sig='';renderU();toast('✅ '+okm,'ok',4000)})
-.catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Periksa lagi daftar user.','warn',8000);sig='';load(true)})}
-function saveU(){if(ROLE!='admin')return;const u=$('#uu').value.trim(),pw=$('#up2').value,s=[...document.querySelectorAll('#usl input:checked')].map(x=>x.value);
-if(!/^[A-Za-z0-9_.-]{3,30}$/.test(u))return alert('Username 3-30 karakter: huruf, angka, titik, garis bawah, atau strip.');
-if((!EU||pw)&&pw.length<6)return alert('Password minimal 6 karakter.');
-if(!s.length)return alert('Pilih minimal satu site.');
-closeU();userPost({action:'user_save',uname:u,password:pw,sites:s.includes('*')?['*']:s,aktif:$('#ua').checked,isnew:!EU},'User '+u+' tersimpan')}
-function delU(i){if(ROLE!='admin')return;const u=USERS[i];if(!confirm('Hapus user '+u.u+'?'))return;userPost({action:'user_delete',uname:u.u},'User '+u.u+' dihapus')}
-let SCP=[],SCS=null;
-async function openScan(){if(ROLE!='admin')return;SCP=[];scTh();$('#msc').hidden=false;
-if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('#scm').textContent='Kamera langsung tidak tersedia di browser ini. Gunakan tombol Kamera / galeri perangkat.';return}
-try{SCS=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});$('#scv').srcObject=SCS;$('#scm').textContent='Arahkan kamera ke dokumen, pastikan seluruh halaman terlihat jelas, lalu klik Ambil halaman. Bisa beberapa halaman.'}
-catch(e){SCS=null;$('#scm').textContent='Kamera tidak bisa dibuka ('+((e&&e.name)||'error')+'). Izinkan akses kamera, atau gunakan tombol Kamera / galeri perangkat.'}}
-function closeScan(){if(SCS){SCS.getTracks().forEach(t=>t.stop());SCS=null}$('#scv').srcObject=null;$('#msc').hidden=true}
-function procCanvas(src,sw,sh){const sc=Math.min(1,1600/Math.max(sw,sh)),w=Math.round(sw*sc),h=Math.round(sh*sc),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(src,0,0,w,h);
-if($('#scd').checked){const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){let g=.299*p[i]+.587*p[i+1]+.114*p[i+2];g=(g-128)*1.35+128+12;g=g<0?0:g>255?255:g;p[i]=p[i+1]=p[i+2]=g}x.putImageData(d,0,0)}
-return{url:c.toDataURL('image/jpeg',.85),w,h}}
-function scanShot(){const v=$('#scv');if(!v.videoWidth)return alert('Kamera belum siap.');SCP.push(procCanvas(v,v.videoWidth,v.videoHeight));scTh()}
-function scanFile(inp){const f=inp.files[0];inp.value='';if(!f)return;const im=new Image();im.onload=()=>{SCP.push(procCanvas(im,im.naturalWidth,im.naturalHeight));scTh();URL.revokeObjectURL(im.src)};im.src=URL.createObjectURL(f)}
-function scTh(){$('#sct').innerHTML=SCP.map((p,i)=>`<div style="position:relative"><img src="${p.url}" style="height:76px;border-radius:6px;border:1px solid var(--bd);display:block" alt="Halaman ${i+1}"><span style="position:absolute;left:4px;bottom:4px;background:#000a;color:#fff;border-radius:8px;padding:0 6px;font-size:11px">${i+1}</span><button type="button" title="Hapus halaman" onclick="scRm(${i})" style="position:absolute;right:2px;top:2px;padding:0 6px;border-radius:10px;background:#c0262d;line-height:18px">×</button></div>`).join('');
-$('#scu1').disabled=$('#scu2').disabled=!SCP.length}
-function scRm(i){SCP.splice(i,1);scTh()}
-function u8(url){const b=atob(url.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
-function mkPdf(pages){const enc=new TextEncoder(),parts=[],offs=[];let len=0;
-const add=x=>{const b=typeof x=='string'?enc.encode(x):x;parts.push(b);len+=b.length};
-const o=(i,body)=>{offs[i]=len;add(i+' 0 obj\n'+body+'\nendobj\n')};
-add('%PDF-1.4\n');o(1,'<< /Type /Catalog /Pages 2 0 R >>');
-o(2,'<< /Type /Pages /Kids ['+pages.map((_,k)=>(3+k*3)+' 0 R').join(' ')+'] /Count '+pages.length+' >>');
-pages.forEach((p,k)=>{const pw=Math.round(p.w*.75),ph=Math.round(p.h*.75),po=3+k*3,co=po+1,io=po+2,ct='q '+pw+' 0 0 '+ph+' 0 0 cm /Im0 Do Q';
-o(po,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pw+' '+ph+'] /Resources << /XObject << /Im0 '+io+' 0 R >> >> /Contents '+co+' 0 R >>');
-o(co,'<< /Length '+ct.length+' >>\nstream\n'+ct+'\nendstream');
-offs[io]=len;add(io+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+p.w+' /Height '+p.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+p.data.length+' >>\nstream\n');add(p.data);add('\nendstream\nendobj\n')});
-const xr=len,tot=3+pages.length*3;add('xref\n0 '+tot+'\n0000000000 65535 f \n');
-for(let i=1;i<tot;i++)add(String(offs[i]).padStart(10,'0')+' 00000 n \n');
-add('trailer\n<< /Size '+tot+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF');return new Blob(parts,{type:'application/pdf'})}
-function scanUse(go){if(!SCP.length)return;const nm='scan-'+cur.r.k+'-'+DOCS[cur.i]+'-'+new Date().toISOString().slice(0,10);
-const file=SCP.length==1?new File([u8(SCP[0].url)],nm+'.jpg',{type:'image/jpeg'}):new File([mkPdf(SCP.map(p=>({w:p.w,h:p.h,data:u8(p.url)})))],nm+'.pdf',{type:'application/pdf'});
-const dt=new DataTransfer();dt.items.add(file);$('#mf').files=dt.files;pv($('#mf'));closeScan();if(go)save()}
-let SCL=[],PSEL=-1,PURL='';
-function openPr(){if(ROLE!='admin')return;PSEL=-1;$('#pru').disabled=true;$('#prv').textContent='Pilih file untuk melihat pratinjau';$('#mpr').hidden=false;prLoad()}
-function closePr(){if(PURL){URL.revokeObjectURL(PURL);PURL=''}$('#mpr').hidden=true}
-function prLoad(){$('#prl').innerHTML='<p class="mu">Memuat…</p>';
-api('action=scans&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN),x=>{
-if(x.error){$('#prl').innerHTML='<p style="color:var(--exc)">'+EH(x.error)+'</p>';return}
-SCL=x.files||[];$('#prf').href=x.folder;$('#prfn').textContent=x.name;prRender()})}
-function prRender(){$('#prl').innerHTML=SCL.length?SCL.map((f,i)=>`<div onclick="prSel(${i})" style="cursor:pointer;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;${i==PSEL?'background:#e6eefa;border-color:#1d63d6':''}"><b style="word-break:break-all">${EH(f.n)}</b><br><span class="mu" style="font-size:12px">${EH(f.t)} · ${(f.s/1024).toFixed(0)} KB</span></div>`).join(''):'<p class="mu">Belum ada file. Scan dokumen dari printer ke folder Scan Masuk, lalu klik Muat ulang.</p>'}
-function prSel(i){PSEL=i;prRender();$('#pru').disabled=true;$('#prv').textContent='Memuat pratinjau…';const f=SCL[i];
-api('action=scanget&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&id='+encodeURIComponent(f.id),x=>{
-if(PSEL!=i)return;if(x.error){$('#prv').textContent=x.error;return}
-const b=atob(x.b64),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);
-if(PURL)URL.revokeObjectURL(PURL);PURL=URL.createObjectURL(new Blob([a],{type:x.mime}));
-$('#prv').innerHTML=x.mime.startsWith('image/')?'<img src="'+PURL+'" style="max-width:100%;max-height:340px;display:block" alt="Pratinjau">':'<iframe src="'+PURL+'" style="width:100%;height:340px;border:0"></iframe>';
-$('#pru').disabled=false})}
-function prUse(){if(ROLE!='admin'||PSEL<0)return;const f=SCL[PSEL],r=cur.r,i=cur.i;
-closePr();toast('Memasang dokumen hasil scan…','info',0);hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({user:USR,pin:PIN,action:'scanuse',site:r.n,kode:r.k,doc:i,id:f.id})}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ '+x.error,'warn',9000);return}
-r.l[i]=x.link;sig='';render();
-const v={d:$('#md').value,p:$('#mp').checked,n:$('#mn').value};openM(ROWS.indexOf(r),i);$('#md').value=v.d;$('#mp').checked=v.p;$('#mn').value=v.n;pp();
-toast('✅ Dokumen hasil scan terpasang di '+DOCS[i]+' '+r.k,'ok',5000)})
-.catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Muat ulang lalu cek folder Scan Masuk.','warn',9000);sig='';load(true)})}
-function exportCsv(){
-const h=['Site','Alokasi Site','Kode','No Polisi','Tipe','Foto Armada'];DOCS.slice(0,5).forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));h.push('SRUT (lampiran)');
-const rows=frows().map(([r])=>{const a=[r.g||'',r.n||'',r.k,r.p,r.t,r.f?'Ada':'Belum ada'];r.d.slice(0,5).forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});a.push(r.l[5]?'Ada':'Belum ada');return a});
-const csv='\ufeff'+[h,...rows].map(a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
-const el=document.createElement('a');el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));el.download='monitoring-dokumen-armada.csv';el.click()}
-const PC={'Berlaku':'o','Expired':'e','Dalam Proses Perpanjang':'p','Belum Ada Dokumen':'b'};
-const SN=(x,d)=>{x=String(x==null?'':x).toLowerCase();if(x.includes('proses')||x=='1')return'Dalam Proses Perpanjang';const k=st(d).k;return k=='na'?'Belum Ada Dokumen':k=='ex'?'Expired':'Berlaku'};
-const DI='<svg viewBox="0 -3 30 31"><rect x="0" y="4" width="24" height="24" rx="6" fill="#dbe9fb"/><path d="M4 12v-2a2 2 0 012-2h2M16 8h2a2 2 0 012 2v2M20 20v2a2 2 0 01-2 2h-2M8 24H6a2 2 0 01-2-2v-2" stroke="#1d63d6" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M9 11h4l3 3v6a1 1 0 01-1 1H9a1 1 0 01-1-1v-8a1 1 0 011-1z" fill="#1d63d6"/><path d="M10 15.5h3.5M10 18h3.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/><path d="M24 4l2.4-2.6M26.3 7.6l3-.8M21.8 1.2l.6-3" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
-const DOCB=u=>u?'<span class="dv"></span>'+(u=='#'?'<span class="di up" title="Mengunggah…">'+DI+'</span>':'<a class="di" href="'+u+'" target="_blank" rel="noopener" title="Dokumen sudah diunggah. Klik untuk melihat." onclick="event.stopPropagation()">'+DI+'</a>'):'';
-const NT=(r,i)=>(r.c&&r.c[i])||'';
-const EH=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const NTB=(r,i)=>NT(r,i)?'<div class="nt" title="'+EH(NT(r,i))+'">'+EH(NT(r,i))+'</div>':'';
-const STP=(sv,d)=>{const v=SN(sv,d);return'<span class="pl '+PC[v]+'" style="margin:0">'+v+'</span>'};
-const SRB=r=>{const u=r.l[5];return u?(u=='#'?'<span class="di up" title="Mengunggah…">'+DI+'</span>':'<a class="di" style="margin-left:0" href="'+u+'" target="_blank" rel="noopener" title="Lampiran SRUT. Klik untuk melihat." onclick="event.stopPropagation()">'+DI+'</a>'):'<span class="mu">–</span>'};
-const LAB=(x,d)=>{const v=SN(x,d);return v!='Dalam Proses Perpanjang'?'':'<div class="kt '+PC[v]+'"><svg viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h7M9 17h5"/></svg>'+v+'</div>'};
-function pp(){const m=$('#md').value,d=m?(+m.slice(8)+' '+MN[+m.slice(5,7)-1]+' '+m.slice(0,4)):'',v=SN('',d);$('#mpv').innerHTML='<span class="pl '+PC[v]+'" style="margin:0">'+v+'</span>'+($('#mp').checked?'<span class="pl p">Dalam Proses Perpanjang</span>':'')}
-const gid=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m&&m[1]};
-function pv(i){const f=i.files[0];if(f&&f.size>10*1024*1024){alert('File maksimal 10 MB. File yang dipilih '+(f.size/1048576).toFixed(1)+' MB.');i.value='';$('#mv').innerHTML='';return}if(f&&f.type.startsWith('image/'))$('#mv').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px">';else if(f)$('#mv').innerHTML='<p class="mu">File dipilih: '+f.name+'</p>'}
-const dl=u=>{const m=/\/d\/([^/]+)/.exec(u)||/id=([^&]+)/.exec(u);return m?'https://drive.google.com/uc?export=download&id='+m[1]:u};
+const q=$('#q').value.toLowerCase(),t=$('#ft').value,d=$('#fd').value,s=$('#fs').value;
+const rows=ROWS.map((r,ri)=>[r,ri]).filter(([r])=>{
+if(q&&!(r.k+r.p).toLowerCase().includes(q))return false;if(t&&r.t!=t)return false;
+if(s){const ix=d===''?[0,1,2,3,4]:[+d];if(!ix.some(i=>st(r.d[i]).k==s))return false}return true});
+$('#tb').innerHTML='<tr><th>No</th><th>Kode</th><th>No Polisi</th><th>Tipe</th>'+DOCS.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+
+rows.map(([r,ri],n)=>`<tr><td>${n+1}</td><td><b>${r.k}</b></td><td>${r.p}</td><td>${r.t}</td>`+r.d.map((x,i)=>{
+const z=st(x);return`<td class="c ${z.k}" data-r="${ri}" data-i="${i}">${z.d?fmt(z.d):'–'}${r.l[i]?' 📎':''}</td>`}).join('')+'</tr>').join('')}
+$('#tb').onclick=e=>{const c=e.target.closest('td.c');if(c)openM(+c.dataset.r,+c.dataset.i)};
 function openM(ri,i){const r=ROWS[ri],z=st(r.d[i]);cur={r,i};
-$('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(i==5?' · lampiran dokumen (tanpa masa berlaku)':z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
-$('#md').value=z.d?iso(z.d):'';$('#mp').checked=SN(r.s[i],r.d[i])=='Dalam Proses Perpanjang';pp();$('#mn').value=NT(r,i);$('#mf').value='';$('#mdl').style.display=$('#mst').style.display=i==5?'none':'';
-const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
-$('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a><a class="bt g" href="#" '+(ok&&id?'onclick="printDoc(\''+id+'\');return false"':off)+'><svg class="i" viewBox="0 0 24 24" style="margin-right:6px"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>Print dokumen</a>';
-$('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
-const ro=ROLE!='admin';['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=$('#msc0').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mdel').style.display=ro?'none':'';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
+$('#mt').textContent=DOCS[i]+' – '+r.k;$('#ms').textContent=r.p+' · '+r.t+(z.d?' · '+(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari lagi'):' · belum ada data');
+$('#md').value=z.d?iso(z.d):'';$('#mf').value='';
+$('#ml').innerHTML=r.l[i]?`<a href="${r.l[i]}" target="_blank" rel="noopener">📎 Lihat dokumen tersimpan</a>`:'';$('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
-async function save(){if(ROLE!='admin')return;
-const dv=$('#md').value,f0=$('#mf').files[0],sel=$('#mp').checked?'Dalam Proses Perpanjang':'';
-if(f0&&f0.size>10*1024*1024)return alert('File maksimal 10 MB.');
-toast('Menyimpan…','info',0);const f=f0?await cmp(f0):null;
+async function save(){
+const dv=$('#md').value,f=$('#mf').files[0];
+if(!dv&&!f)return alert('Isi tanggal atau pilih file.');if(f&&f.size>4e6)return alert('File maksimal 4 MB.');
 const dt=dv?(+dv.slice(8)+' '+MN[+dv.slice(5,7)-1]+' '+dv.slice(0,4)):'';
-const p=sel;
-const body={user:USR,pin:PIN,site:cur.r.n,kode:cur.r.k,doc:cur.i,date:dt,status:cur.i==5?undefined:p,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
-const kd=cur.r.k,di=cur.i,ol=cur.r.l[cur.i],rw=cur.r,sn=cur.r.n,note=$('#mn').value.trim(),nChg=note!==NT(cur.r,cur.i);
-if(nChg){body.note=note;cur.r.c=cur.r.c||['','','','','',''];cur.r.c[cur.i]=note}
-if(dt)cur.r.d[cur.i]=dt;cur.r.s[cur.i]=p;if(f)cur.r.l[cur.i]='#';
-hold=Date.now()+60000;
-const chk=rows=>{const x=rows.find(y=>y.k==kd&&y.n==sn);if(!x)return false;const a=pd(x.d[di]),b=pd(dt);return(!dt||(a&&b&&a.getTime()==b.getTime()))&&String(x.s[di]||'').toLowerCase()==p.toLowerCase()&&(!f||(x.l[di]&&x.l[di]!=ol))},okm='Berhasil disimpan: '+DOCS[di]+' – '+kd;
-closeM();render();
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)}).then(r=>r.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ Gagal menyimpan: '+x.error,'warn',9000);sig='';load(true);return}
-if(x.link)rw.l[di]=x.link;sig='';render();toast('✅ '+okm,'ok',4000)})
-.catch(()=>setTimeout(()=>confirmSave(chk,okm),800))}
-function cnt(rs,ix){const c={ex:0,w7:0,wa:0,ok:0,na:0,pp:0};rs.forEach(r=>ix.forEach(i=>{c[st(r.d[i]).k]++;if(/proses|^1$/i.test(r.s[i]))c.pp++}));return c}
+const body={pin:PIN,kode:cur.r.k,doc:cur.i,date:dt,file:f?{name:f.name,mime:f.type||'application/octet-stream',b64:await b64(f)}:null};
+if(dt)cur.r.d[cur.i]=dt;if(f)cur.r.l[cur.i]='#';
+if(!SCRIPT_URL.startsWith('GANTI')){try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)});setTimeout(load,3000)}catch(e){return alert('Gagal mengirim: '+e)}}
+closeM();render()}
+function cnt(rs,ix){const c={ex:0,wa:0,ok:0,na:0};rs.forEach(r=>ix.forEach(i=>c[st(r.d[i]).k]++));return c}
 function go(t,d,s){$('#ft').value=t;$('#fd').value=d;$('#fs').value=s;$('#q').value='';renderT();tab('t')}
 const esc=s=>String(s).replace(/'/g,"\\'");
-const nb=(c,k,t,d)=>`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')">${c[k]}</span>`;
-function sbar(c){const T=c.ex+c.w7+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="w7" style="width:${c.w7/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
+function nb(c,k,t,d){return`<span class="n ${k}" onclick="go('${esc(t)}','${d}','${k}')">${c[k]}</span>`}
+function sbar(c){const T=c.ex+c.wa+c.ok||1;return`<div class="sb"><i class="ex" style="width:${c.ex/T*100}%"></i><i class="wa" style="width:${c.wa/T*100}%"></i><i class="ok" style="width:${c.ok/T*100}%"></i></div>`}
 function renderD(){
-const all=cnt(VR(),ALLD),pr=VR().reduce((a,r)=>a+r.s.filter(x=>/proses|^1$/i.test(x)).length,0),K=['ex','w7','wa','ok','pp'];
-const H='<tr><th>{h}</th><th>Expired</th><th>≤ 7 hari</th><th>8–30 hari</th><th>Berlaku</th><th>Dalam Proses Perpanjang</th><th>Proporsi</th></tr>';
-const nf=VR().filter(r=>!r.f).length;let h=(nf?`<div class="cd" style="background:#fff3c4;border-color:#f2d36b;display:flex;justify-content:space-between;align-items:center;gap:10px"><span><b>${nf}</b> armada belum memiliki foto armada tampak depan (wajib).</span><button onclick="goFoto()">Lihat daftar</button></div>`:'')+`<div class="k"><div class="ex"><b>${all.ex}</b>Expired</div><div class="w7"><b>${all.w7}</b>≤ 7 hari</div><div class="wa"><b>${all.wa}</b>8–30 hari</div><div><b>${all.ok}</b>Berlaku</div><div><b>${pr}</b>Dalam Proses Perpanjang</div></div><div class="g2">`;
-h+='<div class="cd"><h2>Per dokumen ('+VR().length+' armada)</h2><table>'+H.replace('{h}','Dokumen')+DORD.filter(i=>i<5).map(i=>{const d=DOCS[i],c=cnt(VR(),[i]);return`<tr><td><b>${d}</b></td>${K.map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
-const ts=[...new Set(VR().map(r=>r.t))].sort();
-h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=VR().filter(r=>r.t==t),c=cnt(rs,ALLD);return`<tr><td><b>${t}</b> (${rs.length})</td>${K.map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div></div>';
-h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): <span id="dlc"></span> dokumen</h2>
-<div class="bar" style="margin-bottom:10px;padding:10px 12px">
-<label>Cari<input value="${DF.q}" placeholder="Kode / nopol…" oninput="dfset('q',this.value)"></label>
-<label style="${SITE?'display:none':''}">Site<select onchange="dfset('s',this.value)"><option value="">Semua site</option>${SS().map(x=>`<option${x==DF.s?' selected':''}>${x}</option>`).join('')}</select></label>
-<label>Tipe<select onchange="dfset('t',this.value)"><option value="">Semua tipe</option>${ts.map(t=>`<option${t==DF.t?' selected':''}>${t}</option>`).join('')}</select></label>
-<label>Dokumen<select onchange="dfset('d',this.value)"><option value="">Semua dokumen</option>${DORD.filter(i=>i<5).map(i=>`<option value="${i}"${DF.d!==''&&DF.d==i?' selected':''}>${DOCS[i]}</option>`).join('')}</select></label>
-<label>Sisa waktu<select onchange="dfset('r',this.value)"><option value="">Semua</option><option value="w7"${DF.r=='w7'?' selected':''}>≤ 7 hari</option><option value="wa"${DF.r=='wa'?' selected':''}>8–30 hari</option></select></label>
-<label>Keterangan<select onchange="dfset('k',this.value)"><option value="">Semua</option><option${DF.k=='Dalam Proses Perpanjang'?' selected':''}>Dalam Proses Perpanjang</option><option value="-"${DF.k=='-'?' selected':''}>Tanpa keterangan</option></select></label>
-<button class="g" onclick="dfreset()">Reset</button><span style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="selc" class="mu">0 dokumen dipilih</span><button id="bajukan" onclick="openAj()" disabled>Ajukan proses perpanjang</button></span></div>
-<table><tr><th style="width:34px"><input type="checkbox" onchange="selAll(this.checked)" title="Pilih semua yang tampil"></th><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr><tbody id="dlb"></tbody></table></div>`;
-$('#sd').innerHTML=h;renderDL()}
-let DF={q:'',t:'',d:'',r:'',k:'',s:''};
-function dfset(k,v){DF[k]=v;renderDL()}
-function dfreset(){DF={q:'',t:'',d:'',r:'',k:'',s:''};renderD()}
-function dlist(){const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k!='wa'&&z.k!='w7')return;if(SITE&&grp(r.n)!=SITE)return;
-const kt=SN(r.s[i],x)=='Dalam Proses Perpanjang'?'Dalam Proses Perpanjang':'';
-if(DF.q&&!(r.k+r.p).toLowerCase().includes(DF.q.toLowerCase()))return;
-if(DF.t&&r.t!=DF.t)return;if(DF.s&&grp(r.n)!=DF.s)return;if(DF.d!==''&&i!=DF.d)return;if(DF.r&&z.k!=DF.r)return;
-if(DF.k&&(DF.k=='-'?kt:kt!=DF.k))return;
-L.push({r,ri,i,n:z.n,d:z.d,k:z.k,kt})}));return L.sort((a,b)=>a.n-b.n)}
-let SEL=new Set(),PENG=[];
-const SELK=(r,i)=>r.n+'|'+r.k+'|'+i;
-function renderDL(){const L=dlist();$('#dlc').textContent=L.length;
-$('#dlb').innerHTML=L.map(x=>{const k=SELK(x.r,x.i),off=!!x.kt;return`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td onclick="event.stopPropagation()" style="text-align:center"><input type="checkbox" ${off?'disabled title="Sudah dalam proses perpanjang"':''} ${SEL.has(k)&&!off?'checked':''} onchange="selT(this,'${esc(k)}')"></td><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}${NT(x.r,x.i)?' · '+EH(NT(x.r,x.i)):''}</td></tr>`}).join('')||'<tr><td colspan="8" class="mu">Tidak ada data yang cocok.</td></tr>';updSel()}
-function selT(el,k){el.checked?SEL.add(k):SEL.delete(k);updSel()}
-function selAll(v){dlist().forEach(x=>{if(x.kt)return;const k=SELK(x.r,x.i);v?SEL.add(k):SEL.delete(k)});renderDL()}
-function updSel(){const n=SEL.size;if($('#selc'))$('#selc').textContent=n+' dokumen dipilih';if($('#bajukan'))$('#bajukan').disabled=!n}
-function selItems(){return[...SEL].map(k=>{const p=k.split('|'),i=+p.pop(),kd=p.pop(),site=p.join('|'),r=ROWS.find(y=>y.n==site&&y.k==kd);return r?{r,i}:null}).filter(Boolean)}
-function openAj(){if(ROLE!='admin')return;const it=selItems();if(!it.length)return;
-const gl=PENG.map(g=>{const n=it.filter(x=>g.d.includes(x.i)).length;return n?'<li><b>'+EH(g.n)+'</b> ('+n+' dokumen)<br><span class="mu">Kepada: '+EH(g.to)+' · Cc: '+g.cc.length+' penerima</span></li>':''}).join('');
-$('#ajt').innerHTML=PENG.length?'Email pengajuan dikirim terpisah per jenis dokumen:<ul style="margin:6px 0 0 18px">'+gl+'</ul><span class="mu">Setelah terkirim, status dokumen menjadi Dalam Proses Perpanjang.</span>':'Tujuan email pengajuan belum diatur di Apps Script (PENGAJUAN_RUTE).';
-$('#ajb').disabled=!PENG.length;$('#ajn').value='';
-$('#ajl').innerHTML='<table><tr><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th></tr>'+it.map(x=>{const z=st(x.r.d[x.i]);return`<tr><td><b>${EH(x.r.k)}</b></td><td>${EH(x.r.p)}</td><td>${DOCS[x.i]}</td><td>${z.d?fmt(z.d):'–'}</td><td>${z.d?(z.n<0?'lewat '+(-z.n)+' hari':z.n+' hari'):'–'}</td></tr>`}).join('')+'</table>';
-$('#maj').hidden=false}
-function closeAj(){$('#maj').hidden=true}
-function sendAj(){if(ROLE!='admin')return;const items=selItems();if(!items.length)return;
-const pl={user:USR,pin:PIN,action:'ajukan',items:items.map(x=>({site:x.r.n,kode:x.r.k,doc:x.i})),note:$('#ajn').value.trim()};
-closeAj();toast('Mengirim pengajuan…','info',0);hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(pl)}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ '+(/MailApp|permission|send_mail/i.test(x.error)?'Izin kirim email belum diberikan. Admin perlu menjalankan fungsi izinkanEmail di Apps Script lalu deploy versi baru. Status dokumen belum berubah.':x.error),'warn',12000);sig='';load(true);return}
-items.forEach(it=>{it.r.s[it.i]='Dalam Proses Perpanjang'});SEL.clear();sig='';render();toast('✅ Pengajuan '+items.length+' dokumen terkirim ke email','ok',6000)})
-.catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Cek sheet Pengajuan Perpanjangan sebelum mengirim ulang.','warn',9000);sig='';load(true)})}
-try{sessionStorage.clear()}catch(e){}
+const all=cnt(ROWS,[0,1,2,3,4]),H='<tr><th>{h}</th><th>Sudah lewat</th><th>≤ 30 hari</th><th>Aman</th><th>Tanpa data</th><th>Proporsi</th></tr>';
+let h=`<div class="k"><div><b>${ROWS.length}</b>Total armada</div><div class="ex"><b>${all.ex}</b>Dokumen sudah lewat</div><div class="wa"><b>${all.wa}</b>Jatuh tempo ≤ 30 hari</div><div class="ok"><b>${all.ok}</b>Dokumen aman</div></div>`;
+h+='<div class="cd"><h2>Per dokumen</h2><table>'+H.replace('{h}','Dokumen')+DOCS.map((d,i)=>{const c=cnt(ROWS,[i]);return`<tr><td><b>${d}</b></td>${['ex','wa','ok','na'].map(k=>'<td>'+nb(c,k,'',i)+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
+const ts=[...new Set(ROWS.map(r=>r.t))].sort();
+h+='<div class="cd"><h2>Per tipe armada (semua dokumen)</h2><table>'+H.replace('{h}','Tipe (unit)')+ts.map(t=>{const rs=ROWS.filter(r=>r.t==t),c=cnt(rs,[0,1,2,3,4]);return`<tr><td><b>${t}</b> (${rs.length})</td>${['ex','wa','ok','na'].map(k=>'<td>'+nb(c,k,t,'')+'</td>').join('')}<td>${sbar(c)}</td></tr>`}).join('')+'</table></div>';
+const L=[];ROWS.forEach((r,ri)=>r.d.forEach((x,i)=>{const z=st(x);if(z.k=='wa')L.push({r,ri,i,n:z.n,d:z.d})}));L.sort((a,b)=>a.n-b.n);
+h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): ${L.length} dokumen</h2><table><tr><th>Kode</th><th>Nopol</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th></tr>`+
+L.map(x=>`<tr class="c" style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td>${x.n} hari</td></tr>`).join('')+'</table></div>';
+$('#sd').innerHTML=h}
 load();
 </script></body></html>
