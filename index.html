@@ -79,7 +79,7 @@ tbody tr:hover td.c.ok,tbody tr:hover td.c.na{background:#eef4ff}
 #toast{top:auto;bottom:26px}
 .mc textarea{width:100%;padding:9px 10px;border:1px solid #d3deef;border-radius:8px;background:#fff;color:var(--tx);font:inherit;resize:vertical}
 .nt{font-size:11px;font-style:italic;opacity:.85;max-width:200px;margin:2px auto 0;overflow:hidden;text-overflow:ellipsis}
-.ro #b2,.ro #b3,.ro #b4,.ro #sitesw,.ro .he,.ro button[onclick="openA()"]{display:none}
+.ro #b4,.ro #sitesw,.ro .he,.ro .sck,.ro #bajukan,.ro #selc,.ro button[onclick="openA()"]{display:none}
 .mc select:disabled,.mc input:disabled,.mc textarea:disabled{background:#f1f4f9;color:var(--tx);opacity:1}
 #ml{flex-wrap:wrap}
 .sbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
@@ -189,7 +189,7 @@ m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
 function st(s){const d=pd(s);if(!d)return{k:'na'};const n=Math.round((d-T0)/864e5);return{k:n<0?'ex':n<=7?'w7':n<=30?'wa':'ok',n,d}}
 const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-function tab(x){if(ROLE&&ROLE!='admin')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';$('#su').hidden=x!='u';['b1','b2','b3','b4'].forEach((b,i)=>$('#'+b).className='tb'+('tdku'[i]==x?' act':''));$('#hb').hidden=x!='t'}
+function tab(x){if(ROLE&&ROLE!='admin'&&x=='u')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';$('#su').hidden=x!='u';['b1','b2','b3','b4'].forEach((b,i)=>$('#'+b).className='tb'+('tdku'[i]==x?' act':''));$('#hb').hidden=x!='t'}
 function doLogin(){LSITE=$('#ls').value;USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
 function logout(k){if($('#lp').type!='password')togPw();SITE='';LSITE='';ALLROWS=[];ROLE='';ASITES=['*'];USERS=[];SEL.clear();PENG=[];document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
@@ -513,7 +513,7 @@ h+=`<div class="cd"><h2>Segera jatuh tempo (≤ 30 hari): <span id="dlc"></span>
 <label>Sisa waktu<select onchange="dfset('r',this.value)"><option value="">Semua</option><option value="w7"${DF.r=='w7'?' selected':''}>≤ 7 hari</option><option value="wa"${DF.r=='wa'?' selected':''}>8–30 hari</option></select></label>
 <label>Keterangan<select onchange="dfset('k',this.value)"><option value="">Semua</option><option${DF.k=='Dalam Proses Perpanjang'?' selected':''}>Dalam Proses Perpanjang</option><option value="-"${DF.k=='-'?' selected':''}>Tanpa keterangan</option></select></label>
 <button class="g" onclick="dfreset()">Reset</button><span style="margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span id="selc" class="mu">0 dokumen dipilih</span><button id="bajukan" onclick="openAj()" disabled>Ajukan proses perpanjang</button></span></div>
-<table><tr><th style="width:34px"><input type="checkbox" onchange="selAll(this.checked)" title="Pilih semua yang tampil"></th><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr><tbody id="dlb"></tbody></table></div>`;
+<table><tr><th class="sck" style="width:34px"><input type="checkbox" onchange="selAll(this.checked)" title="Pilih semua yang tampil"></th><th>Kode</th><th>Nopol</th><th>Tipe</th><th>Dokumen</th><th>Berlaku s/d</th><th>Sisa</th><th>Keterangan</th></tr><tbody id="dlb"></tbody></table></div>`;
 $('#sd').innerHTML=h;renderDL()}
 let DF={q:'',t:'',d:'',r:'',k:'',s:''};
 function dfset(k,v){DF[k]=v;renderDL()}
@@ -527,7 +527,7 @@ L.push({r,ri,i,n:z.n,d:z.d,k:z.k,kt})}));return L.sort((a,b)=>a.n-b.n)}
 let SEL=new Set(),PENG=[];
 const SELK=(r,i)=>r.n+'|'+r.k+'|'+i;
 function renderDL(){const L=dlist();$('#dlc').textContent=L.length;
-$('#dlb').innerHTML=L.map(x=>{const k=SELK(x.r,x.i),off=!!x.kt;return`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td onclick="event.stopPropagation()" style="text-align:center"><input type="checkbox" ${off?'disabled title="Sudah dalam proses perpanjang"':''} ${SEL.has(k)&&!off?'checked':''} onchange="selT(this,'${esc(k)}')"></td><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}${NT(x.r,x.i)?' · '+EH(NT(x.r,x.i)):''}</td></tr>`}).join('')||'<tr><td colspan="8" class="mu">Tidak ada data yang cocok.</td></tr>';updSel()}
+$('#dlb').innerHTML=L.map(x=>{const k=SELK(x.r,x.i),off=!!x.kt;return`<tr style="cursor:pointer" onclick="openM(${x.ri},${x.i})"><td class="sck" onclick="event.stopPropagation()" style="text-align:center"><input type="checkbox" ${off?'disabled title="Sudah dalam proses perpanjang"':''} ${SEL.has(k)&&!off?'checked':''} onchange="selT(this,'${esc(k)}')"></td><td><b>${x.r.k}</b></td><td>${x.r.p}</td><td>${x.r.t}</td><td>${DOCS[x.i]}</td><td>${fmt(x.d)}</td><td class="${x.k}">${x.n} hari</td><td>${x.kt||'–'}${NT(x.r,x.i)?' · '+EH(NT(x.r,x.i)):''}</td></tr>`}).join('')||'<tr><td colspan="8" class="mu">Tidak ada data yang cocok.</td></tr>';updSel()}
 function selT(el,k){el.checked?SEL.add(k):SEL.delete(k);updSel()}
 function selAll(v){dlist().forEach(x=>{if(x.kt)return;const k=SELK(x.r,x.i);v?SEL.add(k):SEL.delete(k)});renderDL()}
 function updSel(){const n=SEL.size;if($('#selc'))$('#selc').textContent=n+' dokumen dipilih';if($('#bajukan'))$('#bajukan').disabled=!n}
