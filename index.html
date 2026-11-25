@@ -182,7 +182,7 @@ const DOCS=['PAJAK','STNK','KIR','SIPA','IBM','SRUT'],DORD=[5,0,1,2,3,4],ALLD=[0
 const MON={jan:0,feb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11};
 const LB={ex:'Expired',w7:'≤ 7 hari',wa:'8–30 hari',ok:'Berlaku',na:'Tanpa data'};
 const T0=new Date();T0.setHours(0,0,0,0);
-let SITE='',ROLE='',SO={k:'',d:1},ROWS=[],PIN='',USR='',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
+let SHOWN=false,SITE='',ROLE='',SO={k:'',d:1},ROWS=[],PIN='',USR='',cur=null,busy=false,hold=0,sig='',F={m:'',y:'',s:'',e:''};
 const $=s=>document.querySelector(s);
 function pd(s){s=s||'';let m=/(\d{1,2})[\s-]+([A-Za-z]+)[\s-]+(\d{4})/.exec(s);if(m){const k=MON[m[2].slice(0,3).toLowerCase()];return k==null?null:new Date(+m[3],k,+m[1])}
 m=/(\d{4})-(\d\d)-(\d\d)/.exec(s);return m?new Date(+m[1],m[2]-1,+m[3]):null}
@@ -191,13 +191,13 @@ const fmt=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'num
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function tab(x){if(ROLE&&ROLE!='admin'&&x=='u')x='t';$('#st').hidden=x!='t';$('#sd').hidden=x!='d';$('#sk').hidden=x!='k';$('#su').hidden=x!='u';['b1','b2','b3','b4'].forEach((b,i)=>$('#'+b).className='tb'+('tdku'[i]==x?' act':''));$('#hb').hidden=x!='t'}
 function doLogin(){LSITE=$('#ls').value;USR=$('#lu').value.trim();PIN=$('#lp').value;if(!USR||!PIN){$('#le').textContent='Isi username dan password.';return}$('#le').textContent='Memeriksa…';load(false)}
-function logout(k){if($('#lp').type!='password')togPw();SITE='';LSITE='';ALLROWS=[];ROLE='';ASITES=['*'];USERS=[];SEL.clear();PENG=[];document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
+function logout(k){SHOWN=false;if($('#lp').type!='password')togPw();SITE='';LSITE='';ALLROWS=[];ROLE='';ASITES=['*'];USERS=[];SEL.clear();PENG=[];document.body.classList.remove('ro');sessionStorage.clear();USR=PIN='';ROWS=[];sig='';$('#tb').innerHTML='';$('#sd').innerHTML='';$('#lp').value='';if(!k)$('#lu').value='';$('#le').textContent='';$('#up').innerHTML='';closeM();$('#fp').hidden=true;$('#lg').hidden=false;setTimeout(()=>$('#lu').focus(),50)}
 function load(q){
 if(!USR||!PIN){$('#lg').hidden=false;return}
 if(busy)return;busy=true;const cb='cb'+Date.now(),s=document.createElement('script');
 window[cb]=r=>{busy=false;s.remove();delete window[cb];
 if(r.error){logout(1);$('#le').textContent=r.error;return}
-ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');['b4','sitesw'].forEach(i=>{const e=$('#'+i);if(e)e.style.display=ROLE=='admin'?'':'none'});if(ROLE!='admin')tab('t');$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID')+(r.ver?' · script '+r.ver:' · script lama');
+ROLE=r.role||'admin';document.body.classList.toggle('ro',ROLE!='admin');['b4','sitesw'].forEach(i=>{const e=$('#'+i);if(e)e.style.display=ROLE=='admin'?'':'none'});if(!SHOWN){tab('t');SHOWN=true}$('#lg').hidden=true;$('#up').innerHTML='<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+USR+' · diperbarui '+new Date().toLocaleTimeString('id-ID')+(r.ver?' · script '+r.ver:' · script lama');
 if(q&&Date.now()<hold)return;
 ASITES=r.sites||['*'];USERS=r.users||[];PENG=r.pe||[];const g=JSON.stringify([r.rows,r.hist,r.users,r.sites]);if(g==sig)return;sig=g;setRows(r.rows);HIST=r.hist||[];render()};
 s.onerror=()=>{busy=false;s.remove();if(!q)$('#le').textContent='Gagal terhubung ke Apps Script.'};
