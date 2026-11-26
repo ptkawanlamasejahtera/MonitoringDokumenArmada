@@ -138,7 +138,7 @@ td.fo{padding:2px 6px}
 <div id="mst"><label>Status (otomatis dari tanggal masa berlaku)</label><div id="mpv" style="margin-top:2px"></div>
 <label class="ck" style="margin-top:8px"><input type="checkbox" id="mp" onchange="pp()"> Sedang dalam proses perpanjang</label></div>
 <label>Keterangan (opsional)<textarea id="mn" rows="2" maxlength="200" placeholder="Contoh: berkas di Samsat, estimasi selesai 10 Nov"></textarea></label></label>
-<label id="mfl">Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="msc0" style="margin-top:6px"><button type="button" class="g" onclick="openScan()">Scan dokumen (kamera)</button> <button type="button" class="g" onclick="openHs()">Scan dari printer (langsung)</button> <button type="button" class="g" id="bpr" onclick="openPr()">Ambil hasil scan printer</button></div><div id="mv"></div>
+<label id="mfl">Upload dokumen (PDF/foto, maks 10 MB)<input type="file" id="mf" accept=".pdf,image/*" onchange="pv(this)"></label><div id="mv"></div>
 <div id="ml" class="bt2" style="justify-content:flex-start"></div>
 <div class="bt2"><button id="mdel" class="g" style="margin-right:auto;color:#c0262d;border-color:#f3c0c0" onclick="openDel()">Hapus armada</button><button id="mcl" class="g" onclick="closeM()">Batal</button><button id="msv" onclick="save()">Save</button></div></div></div>
 <div id="mx" class="ov" hidden><div class="mc"><h3>Hapus armada</h3><p class="mu" id="dt"></p>
@@ -159,29 +159,6 @@ td.fo{padding:2px 6px}
 <div id="ajl" style="max-height:220px;overflow:auto"></div>
 <label>Catatan untuk email (opsional)<textarea id="ajn" rows="2" maxlength="300"></textarea></label>
 <div class="bt2"><button class="g" onclick="closeAj()">Batal</button><button id="ajb" onclick="sendAj()">Kirim pengajuan</button></div></div></div>
-<div id="msc" class="ov" hidden><div class="mc wide"><h3>Scan dokumen</h3><p class="mu" id="scm">Arahkan kamera ke dokumen, pastikan seluruh halaman terlihat jelas, lalu klik Ambil halaman.</p>
-<div style="background:#000;border-radius:10px;overflow:hidden"><video id="scv" autoplay playsinline muted style="width:100%;max-height:50vh;display:block;object-fit:contain"></video></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0"><button type="button" onclick="scanShot()">Ambil halaman</button><button type="button" class="g" onclick="document.getElementById('scf').click()">Kamera / galeri perangkat</button><label class="ck" style="margin:0 0 0 6px"><input type="checkbox" id="scd" checked> Mode dokumen (hitam-putih, kontras)</label></div>
-<input type="file" id="scf" accept="image/*" capture="environment" hidden onchange="scanFile(this)">
-<div id="sct" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-<div class="bt2"><button type="button" class="g" onclick="closeScan()">Batal</button><button type="button" class="g" id="scu1" onclick="scanUse(false)" disabled>Pakai hasil scan</button><button type="button" id="scu2" onclick="scanUse(true)" disabled>Pakai &amp; simpan</button></div></div></div>
-<div id="mpr" class="ov" hidden><div class="mc wide"><h3>Hasil scan dari printer</h3>
-<p class="mu">Scan dokumen dari printer/scanner ke folder <b id="prfn">Scan Masuk</b> di Google Drive, lalu pilih filenya di sini. <a id="prf" href="#" target="_blank" rel="noopener">Buka folder</a></p>
-<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px">
-<div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>File terbaru</b><button type="button" class="g" onclick="prLoad()">Muat ulang</button></div><div id="prl" style="max-height:340px;overflow:auto"></div></div>
-<div id="prv" style="border:1px solid var(--bd);border-radius:10px;min-height:220px;display:flex;align-items:center;justify-content:center;color:var(--mu);overflow:hidden;text-align:center;padding:8px">Pilih file untuk melihat pratinjau</div></div>
-<div class="bt2"><button type="button" class="g" onclick="closePr()">Tutup</button><button type="button" id="pru" onclick="prUse()" disabled>Gunakan file ini</button></div></div></div>
-<div id="mhs" class="ov" hidden><div class="mc wide"><h3>Scan langsung dari printer</h3>
-<p class="mu" id="hsm">Fitur ini membutuhkan program <b>Scan Helper</b> yang berjalan di komputer ini (lihat PANDUAN.txt di folder scanhelper).</p>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">
-<label>Alamat IP printer<input id="hip" placeholder="contoh: 192.168.1.50"></label>
-<label>Sumber<select id="hsrc"><option value="platen">Kaca scanner (1 halaman)</option><option value="adf">Pengumpan dokumen / ADF (banyak halaman)</option></select></label>
-<label>Warna<select id="hcol"><option value="gray">Hitam-putih (abu-abu)</option><option value="color">Berwarna</option></select></label>
-<label>Resolusi<select id="hdpi"><option value="150">150 dpi (ringan)</option><option value="200" selected>200 dpi</option><option value="300">300 dpi (detail)</option></select></label></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px"><button type="button" class="g" onclick="hsPing()">Cek koneksi</button><button type="button" id="hsb" onclick="hsScan()">Scan sekarang</button></div>
-<div class="mu" id="hss" style="min-height:20px"></div>
-<div id="hst" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
-<div class="bt2"><button type="button" class="g" onclick="closeHs()">Tutup</button><button type="button" class="g" id="hsu1" onclick="hsUse(false)" disabled>Pakai hasil scan</button><button type="button" id="hsu2" onclick="hsUse(true)" disabled>Pakai &amp; simpan</button></div></div></div>
 <div id="toast"></div>
 <div id="ma" class="ov" hidden><div class="mc"><h3>Tambah Armada</h3><p class="mu">Data baru langsung masuk ke sheet Mater Dokumen.</p>
 <label>Alokasi Site (menu site)<input id="as" list="dls"></label><label>Kode Armada<input id="ak"></label><label>No Polisi<input id="ap"></label><label>Tipe<input id="at" list="dlt"></label>
@@ -406,79 +383,8 @@ if((!EU||pw)&&pw.length<6)return alert('Password minimal 6 karakter.');
 if(!s.length)return alert('Pilih minimal satu site.');
 closeU();userPost({action:'user_save',uname:u,password:pw,sites:s.includes('*')?['*']:s,aktif:$('#ua').checked,hak:$('#uh').value,isnew:!EU},'User '+u+' tersimpan')}
 function delU(i){if(ROLE!='admin')return;const u=USERS[i];if(!confirm('Hapus user '+u.u+'?'))return;userPost({action:'user_delete',uname:u.u},'User '+u.u+' dihapus')}
-let SCP=[],SCS=null;
-async function openScan(){if(!CAN)return;SCP=[];scTh();$('#msc').hidden=false;
-if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('#scm').textContent='Kamera langsung tidak tersedia di browser ini. Gunakan tombol Kamera / galeri perangkat.';return}
-try{SCS=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});$('#scv').srcObject=SCS;$('#scm').textContent='Arahkan kamera ke dokumen, pastikan seluruh halaman terlihat jelas, lalu klik Ambil halaman. Bisa beberapa halaman.'}
-catch(e){SCS=null;$('#scm').textContent='Kamera tidak bisa dibuka ('+((e&&e.name)||'error')+'). Izinkan akses kamera, atau gunakan tombol Kamera / galeri perangkat.'}}
-function closeScan(){if(SCS){SCS.getTracks().forEach(t=>t.stop());SCS=null}$('#scv').srcObject=null;$('#msc').hidden=true}
-function procCanvas(src,sw,sh){const sc=Math.min(1,1600/Math.max(sw,sh)),w=Math.round(sw*sc),h=Math.round(sh*sc),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(src,0,0,w,h);
-if($('#scd').checked){const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){let g=.299*p[i]+.587*p[i+1]+.114*p[i+2];g=(g-128)*1.35+128+12;g=g<0?0:g>255?255:g;p[i]=p[i+1]=p[i+2]=g}x.putImageData(d,0,0)}
-return{url:c.toDataURL('image/jpeg',.85),w,h}}
-function scanShot(){const v=$('#scv');if(!v.videoWidth)return alert('Kamera belum siap.');SCP.push(procCanvas(v,v.videoWidth,v.videoHeight));scTh()}
-function scanFile(inp){const f=inp.files[0];inp.value='';if(!f)return;const im=new Image();im.onload=()=>{SCP.push(procCanvas(im,im.naturalWidth,im.naturalHeight));scTh();URL.revokeObjectURL(im.src)};im.src=URL.createObjectURL(f)}
-function scTh(){$('#sct').innerHTML=SCP.map((p,i)=>`<div style="position:relative"><img src="${p.url}" style="height:76px;border-radius:6px;border:1px solid var(--bd);display:block" alt="Halaman ${i+1}"><span style="position:absolute;left:4px;bottom:4px;background:#000a;color:#fff;border-radius:8px;padding:0 6px;font-size:11px">${i+1}</span><button type="button" title="Hapus halaman" onclick="scRm(${i})" style="position:absolute;right:2px;top:2px;padding:0 6px;border-radius:10px;background:#c0262d;line-height:18px">×</button></div>`).join('');
-$('#scu1').disabled=$('#scu2').disabled=!SCP.length}
-function scRm(i){SCP.splice(i,1);scTh()}
-function u8(url){const b=atob(url.split(',')[1]),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
-function mkPdf(pages){const enc=new TextEncoder(),parts=[],offs=[];let len=0;
-const add=x=>{const b=typeof x=='string'?enc.encode(x):x;parts.push(b);len+=b.length};
-const o=(i,body)=>{offs[i]=len;add(i+' 0 obj\n'+body+'\nendobj\n')};
-add('%PDF-1.4\n');o(1,'<< /Type /Catalog /Pages 2 0 R >>');
-o(2,'<< /Type /Pages /Kids ['+pages.map((_,k)=>(3+k*3)+' 0 R').join(' ')+'] /Count '+pages.length+' >>');
-pages.forEach((p,k)=>{const pw=Math.round(p.w*.75),ph=Math.round(p.h*.75),po=3+k*3,co=po+1,io=po+2,ct='q '+pw+' 0 0 '+ph+' 0 0 cm /Im0 Do Q';
-o(po,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pw+' '+ph+'] /Resources << /XObject << /Im0 '+io+' 0 R >> >> /Contents '+co+' 0 R >>');
-o(co,'<< /Length '+ct.length+' >>\nstream\n'+ct+'\nendstream');
-offs[io]=len;add(io+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+p.w+' /Height '+p.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+p.data.length+' >>\nstream\n');add(p.data);add('\nendstream\nendobj\n')});
-const xr=len,tot=3+pages.length*3;add('xref\n0 '+tot+'\n0000000000 65535 f \n');
-for(let i=1;i<tot;i++)add(String(offs[i]).padStart(10,'0')+' 00000 n \n');
-add('trailer\n<< /Size '+tot+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF');return new Blob(parts,{type:'application/pdf'})}
-function scanUse(go){if(!SCP.length)return;const nm='scan-'+cur.r.k+'-'+DOCS[cur.i]+'-'+new Date().toISOString().slice(0,10);
-const file=SCP.length==1?new File([u8(SCP[0].url)],nm+'.jpg',{type:'image/jpeg'}):new File([mkPdf(SCP.map(p=>({w:p.w,h:p.h,data:u8(p.url)})))],nm+'.pdf',{type:'application/pdf'});
-const dt=new DataTransfer();dt.items.add(file);$('#mf').files=dt.files;pv($('#mf'));closeScan();if(go)save()}
-let SCL=[],PSEL=-1,PURL='';
-function openPr(){if(ROLE!='admin')return;PSEL=-1;$('#pru').disabled=true;$('#prv').textContent='Pilih file untuk melihat pratinjau';$('#mpr').hidden=false;prLoad()}
-function closePr(){if(PURL){URL.revokeObjectURL(PURL);PURL=''}$('#mpr').hidden=true}
-function prLoad(){$('#prl').innerHTML='<p class="mu">Memuat…</p>';
-api('action=scans&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN),x=>{
-if(x.error){$('#prl').innerHTML='<p style="color:var(--exc)">'+EH(x.error)+'</p>';return}
-SCL=x.files||[];$('#prf').href=x.folder;$('#prfn').textContent=x.name;prRender()})}
-function prRender(){$('#prl').innerHTML=SCL.length?SCL.map((f,i)=>`<div onclick="prSel(${i})" style="cursor:pointer;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;${i==PSEL?'background:#e6eefa;border-color:#1d63d6':''}"><b style="word-break:break-all">${EH(f.n)}</b><br><span class="mu" style="font-size:12px">${EH(f.t)} · ${(f.s/1024).toFixed(0)} KB</span></div>`).join(''):'<p class="mu">Belum ada file. Scan dokumen dari printer ke folder Scan Masuk, lalu klik Muat ulang.</p>'}
-function prSel(i){PSEL=i;prRender();$('#pru').disabled=true;$('#prv').textContent='Memuat pratinjau…';const f=SCL[i];
-api('action=scanget&user='+encodeURIComponent(USR)+'&pin='+encodeURIComponent(PIN)+'&id='+encodeURIComponent(f.id),x=>{
-if(PSEL!=i)return;if(x.error){$('#prv').textContent=x.error;return}
-const b=atob(x.b64),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);
-if(PURL)URL.revokeObjectURL(PURL);PURL=URL.createObjectURL(new Blob([a],{type:x.mime}));
-$('#prv').innerHTML=x.mime.startsWith('image/')?'<img src="'+PURL+'" style="max-width:100%;max-height:340px;display:block" alt="Pratinjau">':'<iframe src="'+PURL+'" style="width:100%;height:340px;border:0"></iframe>';
-$('#pru').disabled=false})}
-function prUse(){if(ROLE!='admin'||PSEL<0)return;const f=SCL[PSEL],r=cur.r,i=cur.i;
-closePr();toast('Memasang dokumen hasil scan…','info',0);hold=Date.now()+60000;
-fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({user:USR,pin:PIN,action:'scanuse',site:r.n,kode:r.k,doc:i,id:f.id})}).then(x=>x.json()).then(x=>{hold=0;
-if(x.error){toast('⚠️ '+x.error,'warn',9000);return}
-r.l[i]=x.link;sig='';render();
-const v={d:$('#md').value,p:$('#mp').checked,n:$('#mn').value};openM(ROWS.indexOf(r),i);$('#md').value=v.d;$('#mp').checked=v.p;$('#mn').value=v.n;pp();
-toast('✅ Dokumen hasil scan terpasang di '+DOCS[i]+' '+r.k,'ok',5000)})
-.catch(()=>{hold=0;toast('⚠️ Gagal terhubung. Muat ulang lalu cek folder Scan Masuk.','warn',9000);sig='';load(true)})}
 const EYE_ON='<svg class="i" viewBox="0 0 24 24" style="margin:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',EYE_OFF='<svg class="i" viewBox="0 0 24 24" style="margin:0"><path d="M17.9 17.9A10.9 10.9 0 0112 20C5 20 1 12 1 12a18.5 18.5 0 015.1-5.9M9.9 4.2A9.1 9.1 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.2 3.2M1 1l22 22M14.1 14.1a3 3 0 01-4.2-4.2"/></svg>';
 function togPw(){const i=$('#lp'),sh=i.type=='password';i.type=sh?'text':'password';$('#eye').innerHTML=sh?EYE_OFF:EYE_ON;$('#eye').title=sh?'Sembunyikan password':'Lihat password'}
-const HSURL='http://127.0.0.1:8765';let HSP=[];
-function openHs(){if(!CAN)return;HSP=[];hsTh();try{$('#hip').value=localStorage.getItem('scanip')||''}catch(e){}$('#hss').textContent='';$('#mhs').hidden=false;hsPing()}
-function closeHs(){$('#mhs').hidden=true}
-async function hsFetch(p,ms){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||8000);try{const r=await fetch(HSURL+p,{signal:c.signal});return await r.json()}finally{clearTimeout(t)}}
-async function hsPing(){$('#hss').textContent='Memeriksa Scan Helper…';try{const x=await hsFetch('/ping',4000);$('#hss').innerHTML='✅ Scan Helper aktif (versi '+EH(x.version||'?')+'). Letakkan dokumen di scanner lalu klik Scan sekarang.'}catch(e){$('#hss').innerHTML='⚠️ Scan Helper belum terdeteksi di komputer ini. Jalankan <b>JalankanScanHelper.bat</b> dan biarkan jendelanya terbuka, lalu klik Cek koneksi. Jika browser menanyakan izin akses perangkat lokal, pilih Izinkan.'}}
-async function hsScan(){const ip=$('#hip').value.trim();if(!/^[A-Za-z0-9.\-]{3,100}$/.test(ip))return alert('Isi alamat IP printer, contoh 192.168.1.50.');
-try{localStorage.setItem('scanip',ip)}catch(e){}
-$('#hsb').disabled=true;$('#hss').textContent='Memindai… tunggu sampai selesai (bisa 1–2 menit untuk banyak halaman).';
-try{const x=await hsFetch('/scan?ip='+encodeURIComponent(ip)+'&source='+$('#hsrc').value+'&color='+$('#hcol').value+'&dpi='+$('#hdpi').value,180000);
-if(x.error)throw new Error(x.error);
-for(const p of x.pages)HSP.push(await hsPage(p));
-hsTh();$('#hss').textContent='Selesai: '+x.pages.length+' halaman diterima. Scan lagi untuk menambah halaman, atau pilih Pakai hasil scan.'}
-catch(e){$('#hss').textContent='⚠️ '+(e&&e.name=='AbortError'?'Waktu habis, scanner tidak menjawab.':(e.message||e))}
-$('#hsb').disabled=false}
-function hsPage(p){return new Promise((ok,no)=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,2000/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);ok({url:c.toDataURL('image/jpeg',.85),w,h})};im.onerror=()=>no(new Error('Format gambar dari scanner tidak dikenali.'));im.src='data:'+(p.mime||'image/jpeg')+';base64,'+p.b64})}
-function hsTh(){$('#hst').innerHTML=HSP.map((p,i)=>`<div style="position:relative"><img src="${p.url}" style="height:90px;border-radius:6px;border:1px solid var(--bd);display:block" alt="Halaman ${i+1}"><span style="position:absolute;left:4px;bottom:4px;background:#000a;color:#fff;border-radius:8px;padding:0 6px;font-size:11px">${i+1}</span><button type="button" title="Hapus halaman" onclick="hsRm(${i})" style="position:absolute;right:2px;top:2px;padding:0 6px;border-radius:10px;background:#c0262d;line-height:18px">×</button></div>`).join('');$('#hsu1').disabled=$('#hsu2').disabled=!HSP.length}
-function hsRm(i){HSP.splice(i,1);hsTh()}
-function hsUse(go){if(!HSP.length)return;SCP=HSP.slice();closeHs();scanUse(go)}
 function exportCsv(){
 const h=['Site','Alokasi Site','Kode','No Polisi','Tipe','Foto Armada'];DOCS.slice(0,5).forEach(d=>h.push(d,d+' Status',d+' Keterangan',d+' Catatan'));h.push('SRUT (lampiran)');
 const rows=frows().map(([r])=>{const a=[r.g||'',r.n||'',r.k,r.p,r.t,r.f?'Ada':'Belum ada'];r.d.slice(0,5).forEach((x,i)=>{const z=st(x);a.push(z.d?fmt(z.d):'',LB[z.k],SN(r.s[i],x),NT(r,i))});a.push(r.l[5]?'Ada':'Belum ada');return a});
@@ -504,7 +410,7 @@ $('#md').value=z.d?iso(z.d):'';$('#mp').checked=SN(r.s[i],r.d[i])=='Dalam Proses
 const u=r.l[i],ok=u&&u!='#',id=ok&&gid(u),off='style="opacity:.5;pointer-events:none"';
 $('#ml').innerHTML='<a class="bt g" '+(ok?'href="'+u+'" target="_blank" rel="noopener"':off)+'>Lihat dokumen</a><a class="bt" '+(ok?'href="'+dl(u)+'"':off)+'>Download dokumen</a><a class="bt g" href="#" '+(ok&&id?'onclick="printDoc(\''+id+'\');return false"':off)+'><svg class="i" viewBox="0 0 24 24" style="margin-right:6px"><path d="M6 9V3h12v6M6 18H4a1 1 0 01-1-1v-6a2 2 0 012-2h14a2 2 0 012 2v6a1 1 0 01-1 1h-2M7 14h10v7H7z"/></svg>Print dokumen</a>';
 $('#mv').innerHTML=id?'<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w900" alt="Foto dokumen" style="width:100%;border-radius:8px;border:1px solid var(--bd);margin-top:10px" onerror="this.outerHTML=\'<p class=mu>Pratinjau tidak tersedia. Klik Lihat dokumen.</p>\'">':'<p class="mu">'+(u?'Dokumen sedang diproses…':'Belum ada dokumen diunggah.')+'</p>';
-const ro=!CAN;['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=$('#msc0').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mdel').style.display=ROLE=='admin'?'':'none';$('#bpr').style.display=ROLE=='admin'?'':'none';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
+const ro=!CAN;['md','mp','mn'].forEach(i=>$('#'+i).disabled=ro);$('#mfl').style.display=ro?'none':'';$('#msv').style.display=ro?'none':'';$('#mdel').style.display=ROLE=='admin'?'':'none';$('#mcl').textContent=ro?'Tutup':'Batal';$('#mo').hidden=false}
 function closeM(){$('#mo').hidden=true}
 const b64=f=>new Promise(ok=>{const x=new FileReader();x.onload=()=>ok(x.result.split(',')[1]);x.readAsDataURL(f)});
 async function save(){if(!CAN)return;
